@@ -1,4 +1,11 @@
 from firedrake import *
+
+"""
+Solver for the Navier-Stokes equation for incompressible flow
+    - 
+    - 
+"""
+
 mesh = UnitSquareMesh(10, 10)
 
 V = FunctionSpace(mesh, "CG", 1)
