@@ -1,6 +1,9 @@
 # Fluid Mechanics DEs
 
-## For smaller runs,
+## Firedrake
+This repository uses Firedrake, which currently requires a lot of luck to install. 
+
+### For local runs,
 
 Start with *https://www.firedrakeproject.org/install.html*, then run `source /path-to/venv-firedrake/bin/activate`.
 
@@ -15,6 +18,6 @@ except ImportError:
 
 To see solutions, run the output folder and corresponding .pvd file in Paraview.
 
-## For larger runs,
+### For cluster runs,
 
 (later)
