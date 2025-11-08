@@ -1,0 +1,55 @@
+from compute_est.py import compute_est
+from compute_new_dt.py import compute_new_dt
+
+def timestepper_adaptive(V, dsN, theta, T, tol, u0, get_data):
+    """
+    Perform adaptive timestepping using theta-scheme with
+    final time T, tolerance tol, initial datum u0 and
+    function get_data(t) returning (f(t), g(t))
+    """
+
+    # Initialize needed functions
+    u_n = Function(V)
+    u_np1_low = Function(V)
+    u_np1_high = Function(V)
+
+    # Prepare solvers for computing tentative time steps
+    solver_low = create_timestep_solver(get_data, dsN, theta, u_n, u_np1_low)
+    solver_high_1 = create_timestep_solver(get_data, dsN, theta, u_n, u_np1_high)
+    solver_high_2 = create_timestep_solver(get_data, dsN, theta, u_np1_high, u_np1_high)
+
+    # Initial time step; the value does not really matter
+    dt = T/2
+
+    # Set initial conditions
+    u_n.interpolate(u0)
+
+    # Perform timestepping
+    t = 0
+    while t < T:
+
+        # Report some numbers
+        energy = assemble(u_n*dx)
+        print("{:10.4f} | {:10.4f} | {:#10.4g}".format(t, dt, energy))
+
+        # Compute tentative time steps
+        solver_low(t, dt)
+        solver_high_1(t, dt/2)
+        solver_high_2(t+dt, dt/2)
+
+        # Compute error estimate and new timestep
+        est = compute_est(theta, u_np1_low, u_np1_high)
+        dt_new = compute_new_dt(theta, est, tol, dt)
+
+        if est > tol:
+            # Tolerance not met; repeat the step with new timestep
+            dt = dt_new
+            continue
+
+        # Move to next time step
+        u_n.vector()[:] = u_np1_high.vector()
+        t += dt
+        dt = dt_new
+
+        # Write to file
+        VTKFile.write(u_n, t)

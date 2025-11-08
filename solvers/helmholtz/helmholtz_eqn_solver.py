@@ -1,11 +1,6 @@
-from firedrake import *
-
 def helmholtz_eqn_solver(f, g, nu, V):
-
     """
-    Solver for the indefinite Helmholtz equation used in wave problems:
-        - nu*(div)^2 u + u = f      on Omega
-        - (div u) n = g             on bdy(Omega)
+    Solver for the Helmholtz equation
     """
 
     # trial, test funcs

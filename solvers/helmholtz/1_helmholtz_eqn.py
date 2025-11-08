@@ -1,5 +1,5 @@
-from helmholtz_eqn.py import helmholtz_eqn_solver
-from heat_eqn.py import heat_eqn_solver
+from firedrake import *
+from helmholtz_eqn_solver.py import helmholtz_eqn_solver
 
 # mesh
 mesh = UnitSquareMesh(10, 10)
@@ -26,5 +26,3 @@ u0.interpolate(ufl_u0)
 
 # run solvers
 helmholtz_eqn_solver(f, g, nu, V)
-
-heat_eqn_solver(f, g, u0, nu, V)
