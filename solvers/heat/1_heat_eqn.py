@@ -1,8 +1,8 @@
 from firedrake import *
 import matplotlib.pyplot as plt
 
-from timestepper.py import timestepper
-from timestepper_adaptive.py import timestepper_adaptive
+from timestepper import timestepper
+from timestepper_adaptive import timestepper_adaptive
 
 # mesh
 mesh = UnitSquareMesh(10, 10)

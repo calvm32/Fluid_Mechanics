@@ -1,5 +1,5 @@
 from firedrake import *
-from helmholtz_eqn_solver.py import helmholtz_eqn_solver
+from helmholtz_eqn_solver import helmholtz_eqn_solver
 
 # mesh
 mesh = UnitSquareMesh(10, 10)
