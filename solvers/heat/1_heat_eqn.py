@@ -7,8 +7,6 @@ from create_surface_measure import create_surface_measure_left
 
 # mesh
 mesh = UnitSquareMesh(10, 10)
-print(mesh.cell_set.labels)
-ds_left = create_surface_measure_left(mesh)
 
 # constants
 T = 2           # final time
@@ -37,7 +35,7 @@ def get_data_4(t, result=None):
     g.assign(ufl_g)
     return f, g
 
-timestepper(V, ds_left, theta, T, dt, u0, get_data_4)
+timestepper(V, ds(1), theta, T, dt, u0, get_data_4)
 # timestepper_adaptive(V, ds_left, theta, T, tol, u0, get_data_4)
 
 # Hold plots before quitting
