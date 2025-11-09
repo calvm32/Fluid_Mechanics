@@ -25,9 +25,9 @@ u, p = split(up)
 x, y = SpatialCoordinate(mesh)
 
 # functions
-ufl_f = 0           # source term f
-ufl_g = 0           # bdy condition g
-ufl_u0 = 0          # initial condition u0
+ufl_f = [0,0]           # source term f
+ufl_g = [0,0]           # bdy condition g
+ufl_u0 = [0,0]          # initial condition u0
 
 f = Function(V)
 g = Function(V)
