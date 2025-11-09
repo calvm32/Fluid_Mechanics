@@ -14,13 +14,13 @@ N = 10          # mesh size
 mesh = UnitSquareMesh(N, N)
 
 # declare function space and interpolate functions
-V = FunctionSpace(mesh, "CG", 1)
+V = FunctionSpace(mesh, "CG", 2)
 x, y = SpatialCoordinate(mesh)
 
 # functions
-ufl_f = cos(x*pi)*cos(y*pi)     # source term f
-ufl_g = 0                       # bdy condition g
-ufl_u0 = 0                      # initial condition u0
+ufl_f = cos(x*pi)*cos(y*pi)         # source term f
+ufl_g = as_vector([0, 0])           # bdy condition g
+ufl_u0 = sin(x*pi/2)                # initial condition u0
 
 f = Function(V)
 g = Function(V)
@@ -34,7 +34,7 @@ def make_weak_form(theta, idt, f_n, f_np1, g_n, g_np1, dsN):
     using external coefficients
     """
 
-    def F(u, u_old, v):
+    def F(u, u_old, v, *args):
         return (
             idt * (u - u_old) * v * dx
             + inner(grad(theta * u + (1 - theta) * u_old), grad(v)) * dx

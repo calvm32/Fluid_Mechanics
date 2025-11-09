@@ -16,7 +16,7 @@ def create_timestep_solver(get_data, dsN, theta, u_old, u_new, make_weak_form):
     # Extract function space
     V = u_new.function_space()
 
-    # Make a callable weak form
+    # callable weak form
     weak_form = make_weak_form(theta, idt, f_n, f_np1, g_n, g_np1, dsN)
 
     # Prepare weak formulation

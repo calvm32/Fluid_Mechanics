@@ -42,7 +42,7 @@ def make_weak_form(theta, idt, f_n, f_np1, g_n, g_np1, dsN):
     using external coefficients
     """
 
-    def F(u, u_old, p, q, v):
+    def F(u, u_old, v, p, q):
         u_mid = theta * u + (1 - theta) * u_old
 
         return (
