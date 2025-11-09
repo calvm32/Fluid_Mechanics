@@ -1,6 +1,4 @@
 """
-heat package:
-
 Solver for the heat eqn:
     -> u_t - div(u) = f              in Omega x (0, T)
     -> partial u/ partial n = g      on bdy(Omega) x (0,T)

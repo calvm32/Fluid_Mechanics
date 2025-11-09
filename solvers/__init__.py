@@ -1,6 +1,8 @@
 """
 solvers package: provides time-stepping for PDEs
 
+----
+
 We perform theta-scheme discretization, i.e.
     -> theta = 0     =>      explicit/forward Euler
     -> theta = 1/2   =>      Crank - Nicolson
@@ -11,7 +13,7 @@ We perform theta-scheme discretization, i.e.
 Modules:
     - timestepper.py: fixed-step theta-scheme time integrator
     - timestepper_adaptive.py: adaptive time-stepping version
-    
+
 """
 
 from .timestepper import timestepper
