@@ -12,119 +12,52 @@ N = 64                  # mesh size
 Re = Constant(100.0)    # Reynold's num
 
 # mesh
-mesh= UnitSquareMesh(N, N)
+mesh = UnitSquareMesh(N, N)
 
-# declare function space
-V = VectorFunctionSpace(mesh, "CG", 2)
-W = FunctionSpace(mesh, "CG", 1)
-Z = V * W
+# declare function space and interpolate functions
+V = FunctionSpace(mesh, "CG", 1)
+x, y = SpatialCoordinate(mesh)
 
-up = Function(Z)
-u, p = split(up)
-v, q = TestFunctions(Z)
+# functions
+ufl_f = cos(x*pi)*cos(y*pi)     # source term f
+ufl_g = 0                       # bdy condition g
+ufl_u0 = 0                      # initial condition u0
 
-F = (
-    1.0 / Re * inner(grad(u), grad(v)) * dx +
-    inner(dot(grad(u), u), v) * dx -
-    p * div(v) * dx +
-    div(u) * q * dx
-)
+f = Function(V)
+g = Function(V)
+u0 = Function(V)
 
-bcs = [DirichletBC(Z.sub(0), Constant((1, 0)), (4,)),
-       DirichletBC(Z.sub(0), Constant((0, 0)), (1, 2, 3))]
+u0.interpolate(ufl_u0)
 
-nullspace = MixedVectorSpaceBasis(
-    Z, [Z.sub(0), VectorSpaceBasis(constant=True)])
+def make_weak_form(theta, idt, f_n, f_np1, g_n, g_np1, dsN):
+    """
+    Returns func F(u, u_old, v), which builds weak form
+    using external coefficients
+    """
 
-# preconditioner dictionary setup in case more info is needed
-appctx = {"Re": Re, "velocity_space": 0}
+    def F(u, u_old, v):
+        return (
+            idt * (u - u_old) * v * dx
+            + inner(grad(theta * u + (1 - theta) * u_old), grad(v)) * dx
+            - (theta * f_np1 + (1 - theta) * f_n) * v * dx
+            - (theta * g_np1 + (1 - theta) * g_n) * v * dsN
+        )
 
-# Now we'll solve the problem.  First, using a direct solver.  Again, if
-# MUMPS is not installed, this solve will not work, so we wrap the solve
-# in a ``try/except`` block. ::
+    return F
 
-from firedrake.petsc import PETSc
-
-try:
-    solve(F == 0, up, bcs=bcs, nullspace=nullspace,
-          solver_parameters={"snes_monitor": None,
-                             "ksp_type": "gmres",
-                             "mat_type": "aij",
-                             "pc_type": "lu",
-                             "pc_factor_mat_solver_type": "mumps"})
-except PETSc.Error as e:
-    if e.ierr == 92:
-        warning("MUMPS not installed, skipping direct solve")
+# make data for iterative time stepping
+def get_data(t, result=None):
+    """Create or update data"""
+    if result is None: # only allocate memory if hasn't been yet
+        f = Function(V)
+        g = Function(V)
     else:
-        raise e
+        f, g = result
 
-# Now we'll show an example using the :class:`~.PCDPC` preconditioner
-# that implements the pressure convection-diffusion approximation to the
-# pressure Schur complement.  We'll need more solver parameters this
-# time, so again we'll set those up in a dictionary. ::
+    f.interpolate(ufl_f)
+    g.interpolate(ufl_g)
+    return f, g
 
-parameters = {"mat_type": "matfree",
-              "snes_monitor": None,
-
-# We'll use a non-stationary Krylov solve for the Schur complement, so
-# we need to use a flexible Krylov method on the outside. ::
-
-             "ksp_type": "fgmres",
-             "ksp_gmres_modifiedgramschmidt": None,
-             "ksp_monitor_true_residual": None,
-
-# Now to configure the preconditioner::
-
-             "pc_type": "fieldsplit",
-             "pc_fieldsplit_type": "schur",
-             "pc_fieldsplit_schur_fact_type": "lower",
-
-# we invert the velocity block with LU::
-
-             "fieldsplit_0_ksp_type": "preonly",
-             "fieldsplit_0_pc_type": "python",
-             "fieldsplit_0_pc_python_type": "firedrake.AssembledPC",
-             "fieldsplit_0_assembled_pc_type": "lu",
-
-# and invert the schur complement inexactly using GMRES, preconditioned
-# with PCD. ::
-
-             "fieldsplit_1_ksp_type": "gmres",
-             "fieldsplit_1_ksp_rtol": 1e-4,
-             "fieldsplit_1_pc_type": "python",
-             "fieldsplit_1_pc_python_type": "firedrake.PCDPC",
-
-# We now need to configure the mass and stiffness solvers in the PCD
-# preconditioner.  For this example, we will just invert them with LU,
-# although of course we can use a scalable method if we wish. First the
-# mass solve::
-
-             "fieldsplit_1_pcd_Mp_ksp_type": "preonly",
-             "fieldsplit_1_pcd_Mp_pc_type": "lu",
-
-# and the stiffness solve.::
-
-             "fieldsplit_1_pcd_Kp_ksp_type": "preonly",
-             "fieldsplit_1_pcd_Kp_pc_type": "lu",
-
-# Finally, we just need to decide whether to apply the action of the
-# pressure-space convection-diffusion operator with an assembled matrix
-# or matrix free.  Here we will use matrix-free::
-
-             "fieldsplit_1_pcd_Fp_mat_type": "matfree"}
-
-# With the parameters set up, we can solve the problem, remembering to
-# pass in the application context so that the PCD preconditioner can
-# find the Reynolds number. ::
-
-up.assign(0)
-
-solve(F == 0, up, bcs=bcs, nullspace=nullspace, solver_parameters=parameters,
-      appctx=appctx)
-
-
-u, p = up.subfunctions
-u.rename("Velocity")
-p.rename("Pressure")
-
-VTKFile("cavity.pvd").write(u, p)
+# run
+timestepper(V, ds(1), theta, T, dt, u0, get_data, make_weak_form)
+timestepper_adaptive(V, ds(1), theta, T, tol, u0, get_data, make_weak_form)
