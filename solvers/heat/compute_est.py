@@ -1,3 +1,5 @@
+from firedrake import *
+
 def compute_est(theta, u_L, u_H):
     """Return error estimate by Richardson extrapolation"""
     p = 2 if theta == 0.5 else 1

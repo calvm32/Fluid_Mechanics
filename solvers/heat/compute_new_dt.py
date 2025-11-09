@@ -1,3 +1,5 @@
+from firedrake import *
+
 def compute_new_dt(theta, est, tol, dt):
     """Return new time step"""
     p = 2 if theta == 0.5 else 1

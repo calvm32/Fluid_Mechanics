@@ -1,5 +1,4 @@
 from firedrake import *
-import matplotlib.pyplot as plt
 
 from timestepper import timestepper
 from timestepper_adaptive import timestepper_adaptive
@@ -37,6 +36,3 @@ def get_data_4(t, result=None):
 
 timestepper(V, ds(1), theta, T, dt, u0, get_data_4)
 # timestepper_adaptive(V, ds_left, theta, T, tol, u0, get_data_4)
-
-# Hold plots before quitting
-plt.show()

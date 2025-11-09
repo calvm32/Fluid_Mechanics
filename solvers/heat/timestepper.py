@@ -1,3 +1,5 @@
+from firedrake import *
+
 def timestepper(V, dsN, theta, T, dt, u0, get_data):
     """
     Perform timestepping using theta-scheme with

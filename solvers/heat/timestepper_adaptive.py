@@ -1,3 +1,5 @@
+from firedrake import *
+
 from compute_est import compute_est
 from compute_new_dt import compute_new_dt
 

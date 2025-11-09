@@ -1,3 +1,5 @@
+from firedrake import *
+
 def helmholtz_eqn_solver(f, g, nu, V):
     """
     Solver for the Helmholtz equation

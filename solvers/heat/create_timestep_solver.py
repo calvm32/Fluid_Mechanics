@@ -1,3 +1,5 @@
+from firedrake import *
+
 def create_timestep_solver(get_data, dsN, theta, u_old, u_new):
     """
     Prepare timestep solver by theta-scheme for given
