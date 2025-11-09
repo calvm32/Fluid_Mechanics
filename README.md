@@ -20,4 +20,9 @@ To see solutions, run the output folder and corresponding .pvd file in Paraview.
 
 ### For cluster runs,
 
-(later)
+tmux
+cd /data/$USER
+. venv-firedrake/bin/activate
+cd Fluid_Mechanics
+
+python -m solvers.heat.heat_eqn
