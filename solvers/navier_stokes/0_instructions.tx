@@ -4,4 +4,4 @@ Solver for the Navier-Stokes eqn:
 
 ----
 
-To run, plug values into "1_navier_stokes.py"
+To run, plug values into "navier_stokes.py"

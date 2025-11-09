@@ -12,6 +12,6 @@ We perform theta-scheme discretization, i.e.
 
 ----
 
-To run, plug values into "1_heat_eqn.py"
+To run, plug values into "heat_eqn.py"
 
 This code was adapted from https://fenics-handson.readthedocs.io/en/latest/heat/doc.html into Firedrake

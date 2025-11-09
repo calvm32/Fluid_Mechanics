@@ -4,6 +4,6 @@ Solver for the indefinite Helmholtz eqn used in wave problems:
 
 ----
 
-To run, plug values into "1_helmholtz_eqn.py"
+To run, plug values into "helmholtz_eqn.py"
 
 This code was adapted from https://www.firedrakeproject.org/demos/helmholtz.py.html
