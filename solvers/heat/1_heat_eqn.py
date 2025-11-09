@@ -35,7 +35,7 @@ def get_data_4(t, result=None):
     return f, g
 
 timestepper(V, ds_left, theta, T, dt, u0, get_data_4)
-timestepper_adaptive(V, ds_left, theta, T, tol, u0, get_data_4)
+# timestepper_adaptive(V, ds_left, theta, T, tol, u0, get_data_4)
 
 # Hold plots before quitting
 plt.show()

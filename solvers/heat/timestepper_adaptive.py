@@ -1,5 +1,5 @@
-from compute_est.py import compute_est
-from compute_new_dt.py import compute_new_dt
+from compute_est import compute_est
+from compute_new_dt import compute_new_dt
 
 def timestepper_adaptive(V, dsN, theta, T, tol, u0, get_data):
     """
