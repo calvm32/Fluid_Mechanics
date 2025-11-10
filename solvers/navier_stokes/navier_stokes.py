@@ -1,65 +1,87 @@
 from firedrake import *
 
-# ----------------------------
-# Constants
-# ----------------------------
-T = 2             # final time
-dt = 0.1          # timestep
-theta = 0.5       # theta-scheme
-N = 32            # mesh size
-Re = Constant(100)  # Reynolds number
+from solvers.timestepper import timestepper
+from solvers.timestepper_adaptive import timestepper_adaptive
 
-# ----------------------------
-# Mesh and function spaces
-# ----------------------------
+# constants
+T = 2                   # final time
+dt = 0.1                # timestepping length
+theta = 1/2             # theta constant
+tol = 0.001             # tolerance
+N = 64                  # mesh size
+Re = Constant(100.0)    # Reynold's num for viscosity
+
+# mesh
 mesh = UnitSquareMesh(N, N)
-V = VectorFunctionSpace(mesh, "CG", 2)  # velocity
-W = FunctionSpace(mesh, "CG", 1)        # pressure
+
+# declare function space
+V = VectorFunctionSpace(mesh, "CG", 2)
+W = FunctionSpace(mesh, "CG", 1)
 Z = V * W
 
-up = Function(Z)       # solution at new time
-u_old = Function(Z)    # solution at previous time
+up = Function(Z)
 u, p = split(up)
-v, q = TestFunctions(Z)
 
-# ----------------------------
-# Initial condition
-# ----------------------------
-ufl_velocity = as_vector([0, 0])
-ufl_pressure = Constant(0.0)
-u_old.sub(0).interpolate(ufl_velocity)
-u_old.sub(1).interpolate(ufl_pressure)
-up.assign(u_old)  # initialize solution
+x, y = SpatialCoordinate(mesh)
 
-# ----------------------------
-# Source term and boundary conditions
-# ----------------------------
-ufl_f = as_vector([0, 0])  # source term
-ufl_g = as_vector([0, 0])  # Dirichlet BCs
+# functions
+ufl_f = as_vector([0, 0])           # source term f
+ufl_g = as_vector([0, 0])           # bdy condition g
+ufl_velocity = as_vector([0, 0])    # velocity ic
+ufl_pressure = Constant(0.0)        # pressure ic
 
 f = Function(V)
 g = Function(V)
+u0 = Function(Z)
 
+u0_v, u0_p = u0.split()  # previous solution
+u0_v.interpolate(ufl_velocity)
+u0_p.interpolate(ufl_pressure)
+up.assign(u0)    
+
+def make_weak_form(theta, idt, f_n, f_np1, g_n, g_np1, dsN):
+    """
+    Returns func F(u, u_old, p, q, v), 
+    which builds weak form
+    using external coefficients
+    """
+
+    def F(u, p, u_old, p_old, v, q):
+        u_mid = theta * u + (1 - theta) * u_old
+
+        return (
+            idt * inner(u - u_old, v) * dx
+            + 1.0 / Re * inner(grad(u_mid), grad(v)) * dx +
+            inner(dot(grad(u_mid), u_mid), v) * dx -
+            p * div(v) * dx +
+            div(u_mid) * q * dx
+            - inner((theta * f_np1 + (1 - theta) * f_n), v) * dx
+        )
+
+    return F
+
+# make data for iterative time stepping
 def get_data(t, result=None):
-    if result is None:
-        f, g = Function(V), Function(V)
+    """Create or update data"""
+    if result is None: # only allocate memory if hasn't been yet
+        f = Function(V)
+        g = Function(V)
     else:
         f, g = result
+
     f.interpolate(ufl_f)
     g.interpolate(ufl_g)
     return f, g
 
-bcs = [
-    DirichletBC(Z.sub(0), Constant((1, 0)), 4),       # top lid
-    DirichletBC(Z.sub(0), Constant((0, 0)), (1,2,3))  # other walls
-]
+# setup from demo
+bcs = [DirichletBC(Z.sub(0), Constant((1, 0)), (4,)),
+       DirichletBC(Z.sub(0), Constant((0, 0)), (1, 2, 3))]
 
-# Nullspace for pressure
 nullspace = MixedVectorSpaceBasis(
-    Z, [Z.sub(0), VectorSpaceBasis(constant=True)]
-)
+    Z, [Z.sub(0), VectorSpaceBasis(constant=True)])
 
-# Solver parameters for nonlinear solve with PCD
+appctx = {"Re": Re, "velocity_space": 0}
+
 solver_parameters = {
     "mat_type": "matfree",
     "snes_monitor": None,
@@ -79,48 +101,11 @@ solver_parameters = {
     "fieldsplit_1_pcd_Fp_mat_type": "matfree"
 }
 
-appctx = {"Re": Re, "velocity_space": 0}
+# run
+timestepper(V, ds(1), theta, T, dt, u0, get_data, make_weak_form,
+        bcs=bcs, nullspace=nullspace, solver_parameters=solver_parameters, 
+        appctx=appctx, W=W)
 
-# ----------------------------
-# Time-stepping
-# ----------------------------
-idt = Constant(1/dt)  # mass term for theta-scheme
-outfile = VTKFile("solutions/soln.pvd")
-t = 0.0
-
-while t < T:
-    print(f"t = {t:.4f}")
-
-    # Update source term
-    f_n, g_n = get_data(t)
-    f_np1, g_np1 = get_data(t + dt)
-
-    # Split previous solution
-    u_old_v, p_old = u_old.sub(0), u_old.sub(1)
-
-    # Build weak form for this timestep
-    u_mid = theta*up.sub(0) + (1-theta)*u_old_v
-    f_mid = theta*f_np1 + (1-theta)*f_n
-
-    F = (
-        idt*inner(up.sub(0) - u_old_v, v)*dx
-        + 1/Re*inner(grad(u_mid), grad(v))*dx
-        + inner(dot(grad(u_mid), u_mid), v)*dx
-        - up.sub(1)*div(v)*dx
-        + div(u_mid)*q*dx
-        - inner(f_mid, v)*dx
-    )
-
-    # Solve nonlinear system
-    solve(F == 0, up, bcs=bcs, nullspace=nullspace,
-          solver_parameters=solver_parameters, appctx=appctx)
-
-    # Save solution
-    u, p = up.subfunctions
-    u.rename("Velocity")
-    p.rename("Pressure")
-    outfile.write(u, p)
-
-    # Update for next timestep
-    u_old.assign(up)
-    t += dt
+timestepper_adaptive(V, ds(1), theta, T, tol, u0, get_data, make_weak_form,
+        bcs=bcs, nullspace=nullspace, solver_parameters=solver_parameters, 
+        appctx=appctx, W=W)
