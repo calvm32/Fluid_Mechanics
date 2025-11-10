@@ -12,10 +12,15 @@ def timestepper_adaptive(V, dsN, theta, T, tol, u0, get_data, make_weak_form,
     function get_data(t) returning (f(t), g(t))
     """
 
+    if W is not None:
+        Z = V * W
+    else:
+        Z = V
+
     # Initialize needed functions
-    u_n = Function(V)
-    u_np1_low = Function(V)
-    u_np1_high = Function(V)
+    u_n = Function(Z)
+    u_np1_low = Function(Z)
+    u_np1_high = Function(Z)
 
     # Prepare solvers for computing tentative time steps
     solver_low = create_timestep_solver(get_data, dsN, theta, u_n, u_np1_low, make_weak_form,
