@@ -37,6 +37,7 @@ def timestepper(V, dsN, theta, T, dt, u0, get_data, make_weak_form,
         # Perform time step
         solver(t, dt)
         t += dt
+        u_old.assign(u_new)
 
         # Write to file
-        outfile.write(u)
+        outfile.write(u_new)
