@@ -1,6 +1,6 @@
 from firedrake import *
 
-def create_timestep_solver(V, get_data, dsN, theta, u_old, u_new, make_weak_form,
+def create_timestep_solver(get_data, dsN, theta, u_old, u_new, make_weak_form,
                            bcs, nullspace, solver_parameters, appctx, W):
     """
     Prepare timestep solver by theta-scheme for given
@@ -33,9 +33,11 @@ def create_timestep_solver(V, get_data, dsN, theta, u_old, u_new, make_weak_form
 
     # Build weak form
     if W is not None:
-        trial_vars = TrialFunctions(V)
-        test_vars = TestFunctions(V)
-        F = weak_form(*trial_vars, *u_old.split(), *test_vars)
+        Z = V * W
+        u, p = TrialFunctions(Z)
+        v, q = TestFunctions(Z)
+        u_old_v, p_old = u_old.split()
+        F = weak_form(u, p, u_old_v, p_old, v, q)
     else:
         u, v = TrialFunction(V), TestFunction(V)
         F = weak_form(u, u_old, v)

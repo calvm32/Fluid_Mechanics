@@ -9,11 +9,16 @@ def timestepper(V, dsN, theta, T, dt, u0, get_data, make_weak_form,
     function get_data(t) returning (f(t), g(t))
     """
 
+    if W is not None:
+        Z = V * W
+    else:
+        Z = V
+
     # Initialize solution function
-    u = Function(V)
+    u = Function(Z)
 
     # Prepare solver for computing time step
-    solver = create_timestep_solver(V, get_data, dsN, theta, u, u, make_weak_form,
+    solver = create_timestep_solver(get_data, dsN, theta, u, u, make_weak_form,
                                     bcs, nullspace, solver_parameters, appctx, W)
 
     # Set initial condition
