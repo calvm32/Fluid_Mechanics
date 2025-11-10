@@ -10,4 +10,4 @@ This code was adapted from https://fenics-handson.readthedocs.io/en/latest/heat/
 
 """
 
-from .heat_eqn import *
+from .heat import *

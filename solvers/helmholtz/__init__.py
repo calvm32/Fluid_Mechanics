@@ -9,4 +9,4 @@ This code was adapted from https://www.firedrakeproject.org/demos/helmholtz.py.h
 
 """
 
-from .helmholtz_eqn import *
+from .helmholtz import *
