@@ -19,8 +19,6 @@ def create_timestep_solver(get_data, dsN, theta, u_old, u_new, make_weak_form,
         solver_kwargs["solver_parameters"] = solver_parameters
     if appctx is not None:
         solver_kwargs["appctx"] = appctx
-    if W is not None:
-        solver_kwargs["W"] = W
 
     # Initialize coefficients
     f_n, g_n = get_data(0)
@@ -35,13 +33,17 @@ def create_timestep_solver(get_data, dsN, theta, u_old, u_new, make_weak_form,
 
     # Build weak form
     if W is not None:
-        u, p = TrialFunctions(Z)
+        u, p = split(u_new)
         v, q = TestFunctions(Z)
-        u_old_v, p_old = split(u_old)
-        F = weak_form(u, p, u_old_v, p_old, v, q)
+        u_old, p_old = split(u_old)
+        F = weak_form(u, p, u_old, p_old, v, q)
     else:
-        u, v = TrialFunction(Z), TestFunction(Z)
+        u = u_new
+        v = TestFunction(Z)
         F = weak_form(u, u_old, v)
+
+    # ChatGPT recommended: build Jacobian (helps SNES)
+    J = derivative(F, u_new)
 
     def solve_(t, dt):
         """
@@ -54,6 +56,6 @@ def create_timestep_solver(get_data, dsN, theta, u_old, u_new, make_weak_form,
         idt.assign(1/dt)
 
         # Run the solver
-        solve(F == 0, u_new)
+        solve(F == 0, u_new, J=J, **solver_kwargs)
 
     return solve_
