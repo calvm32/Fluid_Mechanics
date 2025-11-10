@@ -26,8 +26,7 @@ x, y = SpatialCoordinate(mesh)
 
 # functions
 ufl_f = as_vector([0, 0])           # source term f
-ufl_g = as_vector([0, 0])           # bdy condition g
-
+ufl_g = as_vector([0, 0])           # bdy condition gs
 ufl_velocity = as_vector([0, 0])          # initial velocity condition
 ufl_pressure = as_vector([0, 0])          # initial velocity condition
 
@@ -35,8 +34,8 @@ f = Function(V)
 g = Function(V)
 u0 = Function(Z)
 
-u0.sub(0).interpolate(ufl_u0)   # velocity 
-u0.sub(1).interpolate(Constant(0.0))  # pressure 
+u0.sub(0).interpolate(ufl_velocity)   # velocity 
+u0.sub(1).interpolate(ufl_pressure)  # pressure 
 
 def make_weak_form(theta, idt, f_n, f_np1, g_n, g_np1, dsN):
     """
