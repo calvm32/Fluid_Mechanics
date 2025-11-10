@@ -34,9 +34,8 @@ f = Function(V)
 g = Function(V)
 u0 = Function(Z)
 
-u0_v, u0_p = split(u0)  # previous solution
-u0_v.interpolate(ufl_velocity)
-u0_p.interpolate(ufl_pressure)
+u0.subfunctions[0].interpolate(ufl_velocity)
+u0.subfunctions[1].interpolate(ufl_pressure)
 up.assign(u0)    
 
 def make_weak_form(theta, idt, f_n, f_np1, g_n, g_np1, dsN):
