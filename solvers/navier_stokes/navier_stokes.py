@@ -27,7 +27,7 @@ x, y = SpatialCoordinate(mesh)
 # functions
 ufl_f = as_vector([0, 0])           # source term f
 ufl_g = as_vector([0, 0])           # bdy condition g
-ufl_velocity = as_vector([0, 0])    # velocity ic
+ufl_velocity = as_vector([1, 0])    # velocity ic
 ufl_pressure = Constant(0.0)        # pressure ic
 
 f = Function(V)

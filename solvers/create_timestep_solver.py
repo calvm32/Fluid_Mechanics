@@ -42,7 +42,6 @@ def create_timestep_solver(get_data, dsN, theta, u_old, u_new, make_weak_form,
         v = TestFunction(Z)
         F = weak_form(u, u_old, v)
 
-    # ChatGPT recommended: build Jacobian (helps SNES)
     J = derivative(F, u_new)
 
     def solve_(t, dt):
@@ -56,6 +55,6 @@ def create_timestep_solver(get_data, dsN, theta, u_old, u_new, make_weak_form,
         idt.assign(1/dt)
 
         # Run the solver
-        solve(F == 0, u_new, J=J, **solver_kwargs)
+        solve(F == 0, u_new, **solver_kwargs)
 
     return solve_
