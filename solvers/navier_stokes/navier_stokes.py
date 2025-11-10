@@ -34,7 +34,7 @@ f = Function(V)
 g = Function(V)
 u0 = Function(Z)
 
-u0_v, u0_p = u0.split()  # previous solution
+u0_v, u0_p = split(u0)  # previous solution
 u0_v.interpolate(ufl_velocity)
 u0_p.interpolate(ufl_pressure)
 up.assign(u0)    
