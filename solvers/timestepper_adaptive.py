@@ -38,7 +38,7 @@ def timestepper_adaptive(V, dsN, theta, T, tol, u0, get_data, make_weak_form,
 
     # Perform timestepping
     t = 0
-    outfile = VTKFile("solutions/soln_adaptive.pvd")
+    outfile = VTKFile("soln_adaptive.pvd")
     while t < T:
 
         # Report some numbers

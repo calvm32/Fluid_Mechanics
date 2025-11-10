@@ -27,7 +27,7 @@ def timestepper(V, dsN, theta, T, dt, u0, get_data, make_weak_form,
 
     # Perform timestepping
     t = 0
-    outfile = VTKFile("solutions/soln.pvd")
+    outfile = VTKFile("soln.pvd")
     while t < T:
 
         # Report some numbers
