@@ -100,10 +100,10 @@ solver_parameters = {
 }
 
 # run
-timestepper(Z, ds(1), theta, T, dt, u0, get_data, make_weak_form,
+timestepper(V, ds(1), theta, T, dt, u0, get_data, make_weak_form,
         bcs=bcs, nullspace=nullspace, solver_parameters=solver_parameters, 
         appctx=appctx, W=W)
 
-timestepper_adaptive(Z, ds(1), theta, T, tol, u0, get_data, make_weak_form,
+timestepper_adaptive(V, ds(1), theta, T, tol, u0, get_data, make_weak_form,
         bcs=bcs, nullspace=nullspace, solver_parameters=solver_parameters, 
         appctx=appctx, W=W)
