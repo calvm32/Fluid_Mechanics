@@ -127,4 +127,4 @@ u, p = up.subfunctions
 u.rename("Velocity")
 p.rename("Pressure")
 
-VTKFile("cavity.pvd").write(u, p)
+VTKFile("solutions/cavity.pvd").write(u, p)
