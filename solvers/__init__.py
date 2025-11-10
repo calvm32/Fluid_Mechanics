@@ -17,9 +17,9 @@ Modules:
 """
 
 from .timestepper import timestepper
-from .timestepper_adaptive import timestepper_adaptive
+#from .timestepper_adaptive import timestepper_adaptive
 
 __all__ = [
     "timestepper",
-    "timestepper_adaptive",
+#    "timestepper_adaptive",
 ]

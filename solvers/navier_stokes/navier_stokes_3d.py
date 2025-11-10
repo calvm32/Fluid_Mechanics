@@ -73,8 +73,8 @@ def get_data(t, result=None):
     return f, g
 
 # setup from demo
-bcs = [DirichletBC(Z.sub(0), Constant((1, 0)), (4,)),
-       DirichletBC(Z.sub(0), Constant((0, 0)), (1, 2, 3))]
+bcs = [DirichletBC(Z.sub(0), Constant((1, 0)), (6)),
+       DirichletBC(Z.sub(0), Constant((0, 0)), (1, 2, 3, 4, 5))]
 
 nullspace = MixedVectorSpaceBasis(
     Z, [Z.sub(0), VectorSpaceBasis(constant=True)])
