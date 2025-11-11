@@ -20,18 +20,12 @@ def timestepper_adaptive(V, dsN, theta, T, tol, u0, get_data, make_weak_form,
     # Initialize needed functions
     u_n = Function(Z)
     u_np1_low = Function(Z)
-    # u_np1_high = Function(Z)
-
     u_np1_high_mid = Function(Z)
     u_np1_high_end = Function(Z)
 
     # Prepare solvers for computing tentative time steps
     solver_low = create_timestep_solver(get_data, dsN, theta, u_n, u_np1_low, make_weak_form,
                                         bcs, nullspace, solver_parameters, appctx, W)
-    solver_high_1 = create_timestep_solver(get_data, dsN, theta, u_n, u_np1_high_mid, make_weak_form,
-                                        bcs, nullspace, solver_parameters, appctx, W)
-    #solver_high_2 = create_timestep_solver(get_data, dsN, theta, u_np1_high, u_np1_high, make_weak_form,
-    #                                    bcs, nullspace, solver_parameters, appctx, W)
     solver_high_1 = create_timestep_solver(get_data, dsN, theta, u_n, u_np1_high_mid, make_weak_form,
                                         bcs, nullspace, solver_parameters, appctx, W)
     solver_high_2 = create_timestep_solver(get_data, dsN, theta, u_np1_high_mid, u_np1_high_end, make_weak_form,
@@ -57,9 +51,6 @@ def timestepper_adaptive(V, dsN, theta, T, tol, u0, get_data, make_weak_form,
 
         # Compute tentative time steps
         solver_low(t, dt)
-        #solver_high_1(t, dt/2)
-        #solver_high_2(t+dt, dt/2)
-
         solver_high_1(t, dt/2)
         solver_high_2(t + dt/2, dt/2)
 
