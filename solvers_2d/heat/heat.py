@@ -6,7 +6,6 @@ from solvers_2d.timestepper import timestepper
 T = 2           # final time
 dt = 0.1        # timestepping length
 theta = 1/2     # theta constant
-tol = 10**-10    # tolerance
 N = 10          # mesh size
 
 # mesh
