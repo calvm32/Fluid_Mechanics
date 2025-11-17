@@ -41,10 +41,10 @@ for exp in range(1, 10):
     exp = ufl.exp # ufl e, so t gets calculated correctly
 
     # exact calculations for u=e^t*sin(pix)*cos(piy)
-    ufl_u_exact = exp(t)*sin(pi*x)*cos(pi*y)
-    ufl_g_exact = -pi*exp(t)*sin(pi*x)*sin(pi*y)
-    ufl_f_exact = (1+2*pi**2)*exp(t)*sin(pi*x)*cos(pi*y)
-    ufl_u0 = -pi*sin(pi*x)*sin(pi*y)
+    ufl_u_exact = exp(t)*cos(pi*x)*cos(pi*y)
+    ufl_g_exact = 0
+    ufl_f_exact = (1+2*pi**2)*exp(t)*cos(pi*x)*cos(pi*y)
+    ufl_u0 = cos(pi*x)*cos(pi*y)
 
     # functions
     ufl_f = ufl_f_exact     # source term f
