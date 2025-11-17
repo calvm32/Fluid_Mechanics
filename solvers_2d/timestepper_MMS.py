@@ -1,12 +1,15 @@
 from firedrake import *
 from .create_timestep_solver import create_timestep_solver
 
-def timestepper(V, dsN, theta, T, dt, u0, get_data, make_weak_form,
+def timestepper_MMS(V, dsN, theta, T, dt, u0, get_data, make_weak_form, u_exact, 
                 bcs=None, nullspace=None, solver_parameters=None, appctx=None, W=None):
     """
     Perform timestepping using theta-scheme with
     final time T, timestep dt, initial datum u0 and
     function get_data(t) returning (f(t), g(t))
+    
+    ONLY writes the difference between the 
+    final solved solution and the exact solution
     """
 
     if W is not None:
@@ -42,8 +45,10 @@ def timestepper(V, dsN, theta, T, dt, u0, get_data, make_weak_form,
         t += dt
         u_old.assign(u_new)
 
-        # Write to file
-        if W is None:
-            outfile.write(u_new)
-        else:
-            outfile.write(u_new.sub(0), u_new.sub(1))
+    # Write FINAL error to file
+    if W is None:
+        u_error = errornorm(u_exact, u_new)
+        outfile.write(u_error)
+    else:
+        u_error = errornorm(u_exact, u_new.sub(0))
+        outfile.write(u_error)

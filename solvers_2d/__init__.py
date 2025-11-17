@@ -16,7 +16,9 @@ Modules:
 """
 
 from .timestepper import timestepper
+from .timestepper_MMS import timestepper_MMS
 
 __all__ = [
     "timestepper",
+    "timestepper_MMS",
 ]
