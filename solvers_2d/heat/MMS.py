@@ -42,8 +42,9 @@ for exp in range(1, 10):
 
     # exact calculations for u=e^t*sin(pix)*cos(piy)
     ufl_u_exact = exp(t)*sin(pi*x)*cos(pi*y)
-    ufl_g_exact = -pi*sin(pi*x)*sin(pi*y)
+    ufl_g_exact = -pi*exp(t)*sin(pi*x)*sin(pi*y)
     ufl_f_exact = (1+2*pi**2)*exp(t)*sin(pi*x)*cos(pi*y)
+    u0_exact = -pi*sin(pi*x)*sin(pi*y)
 
     # functions
     ufl_f = ufl_f_exact     # source term f
@@ -52,8 +53,10 @@ for exp in range(1, 10):
     f = Function(V)
     g = Function(V)
     u_exact = Function(V)
+    u0 = Function(V)
 
     u_exact.interpolate(ufl_u_exact)
+    u0.interpolate(ufl_u0)
 
     # make data for iterative time stepping
     def get_data(t, result=None):
