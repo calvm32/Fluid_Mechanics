@@ -77,4 +77,5 @@ plt.loglog(N_list, error_list, "-o")
 plt.xlabel("mesh size h")
 plt.ylabel("error")
 plt.grid(True)
-plt.show()
+
+plt.savefig("convergence_plot.png", dpi=200)
