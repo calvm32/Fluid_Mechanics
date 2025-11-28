@@ -1,3 +1,5 @@
+from firedrake import *
+
 # constants
 T = 2           # final time
 dt = 0.1        # timestepping length
