@@ -2,7 +2,7 @@ from firedrake import *
 import matplotlib.pyplot as plt
 from solvers_2d.timestepper_MMS import timestepper_MMS
 from .make_weak_form import make_weak_form
-from .config import T, dt, theta
+from .config import T, dt, theta, ufl_f_exact, ufl_g_exact, ufl_u_exact
 
 N_list = []
 error_list = []
@@ -15,18 +15,6 @@ for exp in range(1, 10):
     # mesh
     mesh = UnitSquareMesh(N, N)
     x, y = SpatialCoordinate(mesh)
-
-    t = Constant(0.0) # symbolic constant for t
-    ufl_exp = ufl.exp # ufl e, so t gets calculated correctly
-
-    # exact calculations for u=e^t*sin(pix)*cos(piy)
-    ufl_u_exact = ufl_exp(t)*cos(pi*x)*cos(pi*y)
-    ufl_f_exact = (1+2*pi**2)*ufl_exp(t)*cos(pi*x)*cos(pi*y)
-    ufl_g_exact = 0
-
-    # functions
-    ufl_f = ufl_f_exact     # source term f
-    ufl_g = ufl_g_exact     # bdy condition g
 
     # declare function space and interpolate functions
     V = FunctionSpace(mesh, "CG", 1)
@@ -48,8 +36,8 @@ for exp in range(1, 10):
         else:
             f, g = result
 
-        f.interpolate(ufl_f)
-        g.interpolate(ufl_g)
+        f.interpolate(ufl_f_exact)
+        g.interpolate(ufl_g_exact)
         return f, g
 
     # run

@@ -3,10 +3,7 @@ import matplotlib.pyplot as plt
 from solvers_2d.timestepper_MMS import timestepper_MMS
 from .make_weak_form import make_weak_form
 import numpy as np
-from .config import T, dt, theta, Re
-
-P = Constant(10.0)      # pressure constant
-H = Constant(5.0)       # height of rectangle, just take length = 3H
+from .config import T, dt, theta, Re, P, H, ufl_v_exact, ufl_p_exact, ufl_f_exact, ufl_g_exact
 
 N_list = []
 error_list = []
@@ -41,22 +38,6 @@ for exp in range(5, 15):
     mesh = RectangleMesh(3*N, N, 3*H, H) # rectangle btwn (0,0) and (3H, H)
     x, y = SpatialCoordinate(mesh)
 
-    t = Constant(0.0) # symbolic constant for t
-    ufl_exp = ufl.exp # ufl e, so t gets calculated correctly
-
-    # exact calculations for Poiseuille flow 
-    # \tfrac{1}{\nu}\big(\sin(\tfrac{\pi}{H} y)e^{\pi^2t/H^2} + \tfrac{1}{2}Py^2 + \tfrac{1}{2}PHy\big)
-    ufl_v_exact = as_vector([Re*( sin(pi*y/H)*ufl_exp(((pi**2)*t)/(H**2)) + 0.5*P*y**2 + 0.5*P*H*y ), Constant(0.0)])
-    ufl_p_exact = P
-    ufl_f_exact = as_vector([1, 0])
-    ufl_g_exact = as_vector([1, 0])
-
-    # functions
-    ufl_v = ufl_v_exact     # velocity ic
-    ufl_p = ufl_p_exact     # pressure ic
-    ufl_f = ufl_f_exact     # source term f
-    ufl_g = ufl_g_exact     # bdy condition g
-
     # declare function space and interpolate functions
     V = VectorFunctionSpace(mesh, "CG", 2)
     W = FunctionSpace(mesh, "CG", 1)
@@ -67,10 +48,10 @@ for exp in range(5, 15):
     g = Function(V)
     u0 = Function(Z)
 
-    u_exact.subfunctions[0].interpolate(ufl_v)
-    u_exact.subfunctions[1].interpolate(ufl_p)
-    u0.subfunctions[0].interpolate(ufl_v)
-    u0.subfunctions[1].interpolate(ufl_p)
+    u_exact.subfunctions[0].interpolate(ufl_v_exact)
+    u_exact.subfunctions[1].interpolate(ufl_p_exact)
+    u0.subfunctions[0].interpolate(ufl_v_exact)
+    u0.subfunctions[1].interpolate(ufl_p_exact)
 
     # make data for iterative time stepping
     def get_data(t, result=None):
@@ -81,8 +62,8 @@ for exp in range(5, 15):
         else:
             f, g = result
 
-        f.interpolate(ufl_f)
-        g.interpolate(ufl_g)
+        f.interpolate(ufl_f_exact)
+        g.interpolate(ufl_g_exact)
         return f, g
     
     # Dirichlet BCs
