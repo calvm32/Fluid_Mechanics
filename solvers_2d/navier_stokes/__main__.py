@@ -7,3 +7,4 @@ Solver for the incompressible Navier-Stokes eqn:
 
 from .solver import *
 from .MMS import *
+from .make_weak_form import *

@@ -12,3 +12,4 @@ This code was adapted from https://fenics-handson.readthedocs.io/en/latest/heat/
 
 from .solver import *
 from .MMS import *
+from .make_weak_form import *
