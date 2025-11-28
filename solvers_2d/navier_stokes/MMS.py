@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from solvers_2d.timestepper_MMS import timestepper_MMS
 from .make_weak_form import make_weak_form
 import numpy as np
-from .config import T, dt, theta, Re, P, H, ufl_v_exact, ufl_p_exact, ufl_f_exact, ufl_g_exact
+from .config import T, dt, theta, Re, P, H
 
 N_list = []
 error_list = []
@@ -41,6 +41,19 @@ for exp in range(5, 15):
     # mesh
     mesh = RectangleMesh(3*N, N, 3*H, H) # rectangle btwn (0,0) and (3H, H)
     x, y = SpatialCoordinate(mesh)
+
+    t = Constant(0.0)
+    ufl_exp = ufl.exp
+
+    # exact functions for Poiseuille flow 
+    ufl_v_exact = as_vector(            # velocity ic
+        [Re*( sin(pi*y/H)*
+            ufl_exp(((pi**2)*t)/(H**2)) + 
+            0.5*P*y**2 + 0.5*P*H*y ), 
+        Constant(0.0)])
+    ufl_p_exact = P                     # pressure ic
+    ufl_f_exact = as_vector([1, 0])     # source term f
+    ufl_g_exact = as_vector([1, 0])     # bdy condition g
 
     # declare function space and interpolate functions
     V = VectorFunctionSpace(mesh, "CG", 2)

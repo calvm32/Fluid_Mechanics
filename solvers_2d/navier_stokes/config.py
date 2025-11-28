@@ -20,16 +20,3 @@ ufl_g = as_vector([0, 0])           # bdy condition g
 
 P = Constant(10.0)      # pressure constant
 H = 5.0                 # height of rectangle, just take length = 3H
-
-t = Constant(0.0) # symbolic constant for t
-ufl_exp = ufl.exp # ufl e, so t gets calculated correctly
-
-# exact functions for Poiseuille flow 
-ufl_v_exact = as_vector(            # velocity ic
-    [Re*( sin(pi*y/H)*
-         ufl_exp(((pi**2)*t)/(H**2)) + 
-         0.5*P*y**2 + 0.5*P*H*y ), 
-     Constant(0.0)])
-ufl_p_exact = P                     # pressure ic
-ufl_f_exact = as_vector([1, 0])     # source term f
-ufl_g_exact = as_vector([1, 0])     # bdy condition g

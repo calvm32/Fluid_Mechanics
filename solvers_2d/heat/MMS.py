@@ -16,6 +16,14 @@ for exp in range(1, 10):
     mesh = UnitSquareMesh(N, N)
     x, y = SpatialCoordinate(mesh)
 
+    t = Constant(0.0) # symbolic constant for t
+    ufl_exp = ufl.exp # ufl e, so t gets calculated correctly
+
+    # exact functions for u=e^t*sin(pix)*cos(piy)
+    ufl_u_exact = ufl_exp(t)*cos(pi*x)*cos(pi*y)                # source term f
+    ufl_f_exact = (1+2*pi**2)*ufl_exp(t)*cos(pi*x)*cos(pi*y)    # bdy condition g
+    ufl_g_exact = 0                                             # initial condition u0
+
     # declare function space and interpolate functions
     V = FunctionSpace(mesh, "CG", 1)
 
