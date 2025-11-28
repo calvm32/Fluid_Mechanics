@@ -13,7 +13,11 @@ appctx = {"Re": Re, "velocity_space": 0}
 solver_parameters = {
     "mat_type": "matfree",
     "snes_monitor": None,
+    "snes_rtol": 1e-8,
+    "snes_atol": 1e-12,
     "ksp_type": "fgmres",
+    "ksp_monitor": None,
+    "ksp_rtol": 1e-8,
     "pc_type": "fieldsplit",
     "pc_fieldsplit_type": "schur",
     "pc_fieldsplit_schur_fact_type": "lower",
@@ -66,11 +70,10 @@ for exp in range(5, 15):
         g.interpolate(ufl_g_exact)
         return f, g
     
-    # Dirichlet BCs
-    bc_noslip = DirichletBC(Z.sub(0), Constant((0.0, 0.0)), (1,3))
-    bc_inflow = DirichletBC(Z.sub(1), P, 4)
-    bc_outflow = DirichletBC(Z.sub(1), Constant(0.0), 2)
-    bcs = [bc_noslip, bc_inflow, bc_outflow]
+    # BCs
+    bc_noslip = DirichletBC(Z.sub(0), Constant((0.0, 0.0)), [1, 3])  # pass list not tuple
+    bc_pressure_ref = DirichletBC(Z.sub(1), Constant(0.0), 2)  # pin pressure at boundary id 2 (outflow)
+    bcs = [bc_noslip, bc_pressure_ref]
 
     # run
     error = timestepper_MMS(V, ds(1), theta, T, dt, u0, get_data, make_weak_form, u_exact,
