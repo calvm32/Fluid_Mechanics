@@ -99,12 +99,11 @@ for exp in range(1, 10):
     bc_noslip = DirichletBC(Z.sub(0), Constant((0.0, 0.0)), walls)
     bc_inflow = DirichletBC(Z.sub(1), P, inflow)
     bc_outflow = DirichletBC(Z.sub(1), Constant(0.0), outflow)
-    bcu = [bc_noslip]
-    bcp = [bc_inflow, bc_outflow]
+    bcs = [bc_noslip, bc_inflow, bc_outflow]
 
     # run
     error = timestepper_MMS(V, ds(1), theta, T, dt, u0, get_data, make_weak_form, u_exact,
-            bcs=bcu+ bcp, solver_parameters=solver_parameters, 
+            bcs=bcs, solver_parameters=solver_parameters, 
             appctx=appctx, W=W)
     error_list.append(error)
 
