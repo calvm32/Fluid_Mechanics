@@ -48,8 +48,8 @@ for exp in range(1, 10):
     # \tfrac{1}{\nu}\big(\sin(\tfrac{\pi}{H} y)e^{\pi^2t/H^2} + \tfrac{1}{2}Py^2 + \tfrac{1}{2}PHy\big)
     ufl_v_exact = as_vector([Re*( sin(pi*y/H)*ufl_exp(((pi**2)*t)/(H**2)) + 0.5*P*y**2 + 0.5*P*H*y ), Constant(0.0)])
     ufl_p_exact = P
-    ufl_f_exact = 0
-    ufl_g_exact = 0
+    ufl_f_exact = as_vector([1, 0])
+    ufl_g_exact = as_vector([1, 0])
 
     # functions
     ufl_v = ufl_v_exact     # velocity ic
