@@ -2,11 +2,7 @@ from firedrake import *
 import matplotlib.pyplot as plt
 from solvers_2d.timestepper_MMS import timestepper_MMS
 from .make_weak_form import make_weak_form
-
-# constants
-T = 2           # final time
-dt = 0.1        # timestepping length
-theta = 1/2     # theta constant
+from .config import T, dt, theta
 
 N_list = []
 error_list = []

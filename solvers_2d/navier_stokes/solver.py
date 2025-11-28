@@ -1,13 +1,7 @@
 from firedrake import *
 from solvers_2d.timestepper import timestepper
 from .make_weak_form import make_weak_form
-
-# constants
-T = 2                   # final time
-dt = 0.1                # timestepping length
-theta = 1/2             # theta constant
-N = 256                 # mesh size
-Re = Constant(100.0)    # Reynold's num for viscosity
+from .config import T, dt, theta, N, Re, ufl_v, ufl_p, ufl_f, ufl_g
 
 appctx = {"Re": Re, "velocity_space": 0}
 
@@ -33,12 +27,6 @@ solver_parameters = {
 # mesh
 mesh = UnitSquareMesh(N, N)
 x, y = SpatialCoordinate(mesh)
-
-# functions
-ufl_v = as_vector([1, 0])           # velocity ic
-ufl_p = Constant(0.0)               # pressure ic
-ufl_f = as_vector([0, 0])           # source term f
-ufl_g = as_vector([0, 0])           # bdy condition g
 
 # declare function space and interpolate functions
 V = VectorFunctionSpace(mesh, "CG", 2)
