@@ -7,8 +7,6 @@ from .config import T, dt, theta, Re, P, H
 N_list = []
 error_list = []
 
-appctx = {"Re": Re, "velocity_space": 0}
-
 solver_parameters = {
     "mat_type": "matfree",
     "snes_monitor": None,
@@ -53,6 +51,8 @@ for exp in range(3, 10):
     V = VectorFunctionSpace(mesh, "CG", 2)
     W = FunctionSpace(mesh, "CG", 1)
     Z = V * W
+    
+    appctx = {"Re": Re, "velocity_space": 0}
 
     u_exact = Function(Z)
     f = Function(V)
