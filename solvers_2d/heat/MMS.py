@@ -1,6 +1,7 @@
 from firedrake import *
 import matplotlib.pyplot as plt
 from solvers_2d.timestepper_MMS import timestepper_MMS
+from .make_weak_form import make_weak_form
 from .config import T, dt, theta
 
 N_list = []

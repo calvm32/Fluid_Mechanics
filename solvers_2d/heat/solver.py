@@ -1,5 +1,6 @@
 from firedrake import *
 from solvers_2d.timestepper import timestepper
+from .make_weak_form import make_weak_form
 from .config import T, dt, theta, N
 
 # mesh
