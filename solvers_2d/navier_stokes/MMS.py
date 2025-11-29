@@ -23,11 +23,16 @@ solver_parameters = {
     "fieldsplit_1_pc_python_type": "firedrake.PCDPC",
     "fieldsplit_1_pcd_Mp_pc_type": "lu",
     "fieldsplit_1_pcd_Kp_pc_type": "lu",
-    "fieldsplit_1_pcd_Fp_mat_type": "matfree"
+    "fieldsplit_1_pcd_Fp_mat_type": "matfree",
+    "snes_converged_reason": None,
+    "ksp_monitor_true_residual": None,
+    "ksp_converged_reason": None,
 }
 
 # calculate error as mesh size increases
 for exp in range(3, 10):
+    print("starting now, N = {:0s}".format("N"))
+
     N = 2**exp
     N_list.append(N)
 
@@ -51,7 +56,7 @@ for exp in range(3, 10):
     V = VectorFunctionSpace(mesh, "CG", 2)
     W = FunctionSpace(mesh, "CG", 1)
     Z = V * W
-    
+
     appctx = {"Re": Re, "velocity_space": 0}
 
     u_exact = Function(Z)
