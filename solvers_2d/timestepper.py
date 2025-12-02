@@ -4,7 +4,7 @@ from firedrake.functionspaceimpl import MixedFunctionSpace
 from .create_timestep_solver import create_timestep_solver
 from .printoff import iter_info_verbose, text, green
 
-def timestepper(theta, Z, dsN, T, dt, make_weak_form, function_appctx, 
+def timestepper(theta, Z, dsN, t, T, dt, make_weak_form, function_appctx, 
                 bcs=None, nullspace=None, solver_parameters=None):
     """
     Perform timestepping using theta-scheme with
