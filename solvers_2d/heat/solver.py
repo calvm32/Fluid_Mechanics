@@ -4,7 +4,6 @@ from .make_weak_form import make_weak_form
 from solvers_2d.printoff import blue
 from .config import t0, T, dt, theta, N
 
-
 blue(f"\n*** Starting solve ***\n", spaced=True)
 
 # mesh

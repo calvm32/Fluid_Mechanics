@@ -1,29 +1,10 @@
 from firedrake import *
 from solvers_2d.timestepper import timestepper
 from .make_weak_form import make_weak_form
-from .config import t0, T, dt, theta, N, Re
+from solvers_2d.printoff import blue
+from .config import t0, T, dt, theta, N, solver_parameters
 
-solver_parameters = {
-    "mat_type": "matfree",
-    "ksp_type": "fgmres",
-    "pc_type": "fieldsplit",
-    "pc_fieldsplit_type": "schur",
-    "pc_fieldsplit_schur_fact_type": "lower",
-    "fieldsplit_0_ksp_type": "preonly",
-    "fieldsplit_0_pc_type": "python",
-    "fieldsplit_0_pc_python_type": "firedrake.AssembledPC",
-    "fieldsplit_0_assembled_pc_type": "lu",
-    "fieldsplit_1_ksp_type": "gmres",
-    "fieldsplit_1_pc_type": "python",
-    "fieldsplit_1_pc_python_type": "firedrake.PCDPC",
-    "fieldsplit_1_pcd_Mp_pc_type": "lu",
-    "fieldsplit_1_pcd_Kp_pc_type": "lu",
-    "fieldsplit_1_pcd_Fp_mat_type": "matfree",
-    #"snes_monitor": None,
-    #"snes_converged_reason": None,
-    #"ksp_monitor_true_residual": None,
-    #"ksp_converged_reason": None,
-}
+blue(f"\n*** Starting solve ***\n", spaced=True)
 
 # mesh
 mesh = UnitSquareMesh(N, N)
