@@ -1,4 +1,5 @@
 from firedrake import *
+from firedrake.functionspaceimpl import MixedFunctionSpace
 
 def create_timestep_solver(theta, Z, dsN, u_old, u_new, make_weak_form,
                            function_appctx, bcs, nullspace, solver_parameters):
