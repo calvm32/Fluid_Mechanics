@@ -12,13 +12,17 @@ def timestepper_MMS(theta, Z, dsN, t, T, dt, N, make_weak_form,
     final solved solution and the exact solution
     """
 
+    # -------------
+    # Setup problem
+    # -------------
+
     # Initialize solution function
     u_old = Function(Z)
     u_new = Function(Z)
 
     # initial condition
-    u0 = function_appctx["u0"]
-    u_old.assign(u0)
+    ufl_u0 = function_appctx["u0"]
+    u_old.assign(ufl_u0)
 
     # Prepare solver for computing time step
     solver = create_timestep_solver(theta, Z, dsN, u_old, u_new, make_weak_form,
@@ -30,9 +34,10 @@ def timestepper_MMS(theta, Z, dsN, t, T, dt, N, make_weak_form,
 
     text(f"*** Beginning solve with step size {dt} ***", spaced=True)
 
-    # -------------
+    # --------------------
     # Perform timestepping
-    # -------------
+    # --------------------
+
     step = 0
     outfile = VTKFile(f"soln_N={N}.pvd")
     while t < T:

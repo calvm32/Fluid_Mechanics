@@ -19,8 +19,6 @@ f = Function(V)
 g = Function(V)
 u0 = Function(V)
 
-u0.interpolate(ufl_u0)
-
 function_appctx = {
     "ufl_f": ufl_f,
     "ufl_g": ufl_g,
