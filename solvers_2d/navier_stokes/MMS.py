@@ -35,7 +35,7 @@ for exp in range(3, 7):
     N = 2**exp
     N_list.append(N)
 
-    blue(f"--- Beginning solve with mesh size N = {N:0d} ---", spaced=True)
+    blue(f"\n*** Mesh size N = {N:0d} ***\n", spaced=True)
 
     # mesh
     mesh = RectangleMesh(3*N, N, 3*H, H) # rectangle btwn (0,0) and (3H, H)
