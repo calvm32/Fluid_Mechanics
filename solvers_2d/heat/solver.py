@@ -15,10 +15,6 @@ ufl_g = 0                       # bdy condition g
 # declare function space and interpolate functions
 V = FunctionSpace(mesh, "CG", 1)
 
-f = Function(V)
-g = Function(V)
-u0 = Function(V)
-
 function_appctx = {
     "ufl_u0": ufl_u0,
     "ufl_f": ufl_f,
