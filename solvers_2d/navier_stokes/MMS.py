@@ -1,12 +1,10 @@
 from firedrake import *
 import matplotlib.pyplot as plt
 from solvers_2d.timestepper_MMS import timestepper_MMS
-from solvers_2d.timestepper import timestepper
 from .make_weak_form import make_weak_form
-from .config import T, dt, theta, Re, P, H
 from solvers_2d.printoff import blue
+from .config import T, dt, theta, Re, P, H, N_list
 
-N_list = []
 error_list = []
 
 solver_parameters = {
@@ -32,9 +30,7 @@ solver_parameters = {
 }
 
 # calculate error as mesh size increases
-for exp in range(3, 7):
-    N = 2**exp
-    N_list.append(N)
+for N in N_list:
 
     blue(f"\n*** Mesh size N = {N:0d} ***\n", spaced=True)
 
