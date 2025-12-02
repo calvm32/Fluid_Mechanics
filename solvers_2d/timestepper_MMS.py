@@ -55,10 +55,12 @@ def timestepper_MMS(theta, Z, dsN, t, T, dt, N, make_weak_form,
         energy = assemble(inner(u_new.sub(0), u_new.sub(0)) * dx)
         iter_info_verbose("TIME STEP COMPLETED", f"energy = {energy}", i=step)
 
-        # -------------
-        # Write to file
-        # -------------
+        # ------------------------------
+        # Update exact and write to file
+        # ------------------------------
         if isinstance(Z, MixedFunctionSpace):
+            u_exact = Function(Z)
+
             ufl_v_exact = function_appctx["ufl_v_exact"]
             ufl_p_exact = function_appctx["ufl_p_exact"]
             u_exact.subfunctions[0].interpolate(ufl_v_exact)
@@ -68,6 +70,8 @@ def timestepper_MMS(theta, Z, dsN, t, T, dt, N, make_weak_form,
             outfile.write(u_new.sub(0), u_new.sub(1))
         
         else:
+            u_exact = Function(Z)
+            
             ufl_u_exact = function_appctx["ufl_u_exact"]
             u_exact.subfunctions[0].interpolate(ufl_u_exact)
 
