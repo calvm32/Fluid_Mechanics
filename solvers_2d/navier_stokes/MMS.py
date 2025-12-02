@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from solvers_2d.timestepper_MMS import timestepper_MMS
 from .make_weak_form import make_weak_form
 from .config import T, dt, theta, Re, P, H
+from printoff import blue
 
 N_list = []
 error_list = []
@@ -34,7 +35,7 @@ for exp in range(5, 6):
     N = 2**exp
     N_list.append(N)
 
-    print("--- Beginning solve with mesh size N = {:0d} ---".format(N))
+    blue(f"--- Beginning solve with mesh size N = {N:0d} ---", spaced=True)
 
     # mesh
     mesh = RectangleMesh(3*N, N, 3*H, H) # rectangle btwn (0,0) and (3H, H)
