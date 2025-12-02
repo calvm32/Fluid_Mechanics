@@ -27,14 +27,6 @@ for N in N_list:
     # declare function space and interpolate functions
     V = FunctionSpace(mesh, "CG", 1)
 
-    u_exact = Function(V)
-    f = Function(V)
-    g = Function(V)
-    u0 = Function(V)
-
-    u_exact.interpolate(ufl_u_exact)
-    u0.interpolate(ufl_u_exact)
-
     function_appctx = {
           "ufl_u_exact": ufl_u_exact,
           "ufl_f": ufl_f_exact,
