@@ -38,6 +38,7 @@ def timestepper_MMS(V, f, g,dsN, theta, t, T, dt, u0, make_weak_form, u_exact, N
     step = 0
     outfile = VTKFile(f"soln_N={N}.pvd")
     while float(t) < T:
+        print(str(float(t)))
 
         # Perform time step
         solver(float(t), dt)
