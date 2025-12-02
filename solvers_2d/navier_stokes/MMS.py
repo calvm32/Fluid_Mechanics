@@ -55,7 +55,7 @@ for N in N_list:
     nullspace = MixedVectorSpaceBasis(Z, [VectorSpaceBasis(constant=True), None])
     
     # run
-    error = timestepper_MMS(theta, V, f, g, ds(1), t0, T, dt, u0, u_exact,
+    error = timestepper_MMS(theta, V, ds(1), f, g, t0, T, dt, u0, u_exact,
             N, make_weak_form, W=W, bcs=bcs, nullspace=nullspace, 
             solver_parameters=solver_parameters, appctx=appctx)
     error_list.append(error)

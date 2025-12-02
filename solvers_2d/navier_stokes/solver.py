@@ -62,5 +62,5 @@ nullspace = MixedVectorSpaceBasis(
     Z, [Z.sub(0), VectorSpaceBasis(constant=True)])
 
 # run
-timestepper(theta, V, f, g, ds(1), T, dt, u0, make_weak_form, W=W,
+timestepper(theta, V, ds(1), f, g, T, dt, u0, make_weak_form, W=W,
         bcs=bcs, nullspace=nullspace, solver_parameters=solver_parameters, appctx=appctx)
