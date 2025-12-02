@@ -7,7 +7,7 @@ from firedrake import *
 T = 1                   # final time
 dt = 0.001               # timestepping length
 theta = 1/2             # theta constant
-Re = Constant(0.01)     # Reynold's num for viscosity
+Re = Constant(200)     # Reynold's num for viscosity
 
 # ----------------
 # For single solve 
