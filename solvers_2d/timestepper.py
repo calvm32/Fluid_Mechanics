@@ -38,7 +38,7 @@ def timestepper(theta, Z, dsN, T, dt, make_weak_form, function_appctx,
     # --------------------
 
     step = 0
-    outfile = VTKFile(f"soln_N={N}.pvd")
+    outfile = VTKFile("soln_N.pvd")
     while t < T:
         # Perform time step
         solver(t, dt)
