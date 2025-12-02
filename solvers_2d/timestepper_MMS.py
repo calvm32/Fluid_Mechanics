@@ -21,7 +21,7 @@ def timestepper_MMS(theta, Z, dsN, t, T, dt, N, make_weak_form,
     u_new = Function(Z)
 
     # initial condition
-    ufl_u0 = function_appctx["ufl_u0"]
+    ufl_u0 = function_appctx["ufl_u_exact"]
     u_old.assign(ufl_u0)
 
     # Prepare solver for computing time step
