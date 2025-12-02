@@ -13,7 +13,7 @@ for exp in range(1, 10):
     N = 2**exp
     N_list.append(N)
 
-    blue(f"--- Beginning solve with mesh size N = {N:0d} ---", spaced=True)
+    blue(f"*** Mesh size N = {N:0d} ***", spaced=True)
 
     # mesh
     mesh = UnitSquareMesh(N, N)
