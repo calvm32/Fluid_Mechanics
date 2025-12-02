@@ -18,7 +18,7 @@ def timestepper(theta, Z, dsN, T, dt, make_weak_form, function_appctx,
     u_new = Function(Z)
 
     # initial condition
-    ufl_u0 = function_appctx["u0"]
+    ufl_u0 = function_appctx["ufl_u0"]
     u_old.assign(ufl_u0)
 
     # Prepare solver for computing time step
