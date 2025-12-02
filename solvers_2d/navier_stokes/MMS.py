@@ -24,7 +24,7 @@ solver_parameters = {
     "fieldsplit_1_pcd_Mp_pc_type": "lu",
     "fieldsplit_1_pcd_Kp_pc_type": "lu",
     "fieldsplit_1_pcd_Fp_mat_type": "matfree",
-    "snes_converged_reason": None,
+    #"snes_converged_reason": None,
     #"ksp_monitor_true_residual": None,
     #"ksp_converged_reason": None,
 }
@@ -34,7 +34,7 @@ for exp in range(5, 6):
     N = 2**exp
     N_list.append(N)
 
-    print("starting N = {:0d}".format(N))
+    print("--- Beginning solve with mesh size N = {:0d} ---".format(N))
 
     # mesh
     mesh = RectangleMesh(3*N, N, 3*H, H) # rectangle btwn (0,0) and (3H, H)

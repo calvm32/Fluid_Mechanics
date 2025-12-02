@@ -1,5 +1,6 @@
 from firedrake import *
 from .create_timestep_solver import create_timestep_solver
+from printoff import iter_info_verbose, text, green
 
 def timestepper(V, f, g, dsN, theta, T, dt, u0, make_weak_form,
                 bcs=None, nullspace=None, solver_parameters=None, appctx=None, W=None):
@@ -25,24 +26,32 @@ def timestepper(V, f, g, dsN, theta, T, dt, u0, make_weak_form,
     u_old.assign(u0)
 
     # Print table header
-    print("{:10s} | {:10s} | {:10s}".format("t", "dt", "energy"))
+    energy = assemble(inner(u_old.sub(0), u_old.sub(0)) * dx)
+    iter_info_verbose("INITIAL CONDITIONS", f"energy = {energy}", i=0, spaced=True)
+
+    text(f"*** Beginning solve with step size {dt} ***", spaced=True)
 
     # Perform timestepping
     t = 0
-    outfile = VTKFile("soln.pvd")
+    step = 1
     while t < T:
 
         # Report some numbers
         energy = assemble(inner(u_new.sub(0), u_new.sub(0)) * dx)
-        print("{:10.4f} | {:10.4f} | {:#10.4g}".format(t, dt, energy))
+        iter_info_verbose("TIME STEP COMPLETED", f"energy = {energy}", i=step)
 
         # Perform time step
         solver(t, dt)
         t += dt
         u_old.assign(u_new)
 
+        # count steps to print
+        step += 1
+
         # Write to file
         if W is None:
             outfile.write(u_new)
         else:
             outfile.write(u_new.sub(0), u_new.sub(1))
+
+        green(f"Completed", spaced=True)

@@ -6,7 +6,7 @@ Solver for the heat eqn:
 
 ----
 
-This code was adapted from https://fenics-handson.readthedocs.io/en/latest/heat/doc.html into Firedrake
+This code was adapted from https://fenics-handson.readthedocs.io/en/latest/heat/doc.html
 
 """
 
