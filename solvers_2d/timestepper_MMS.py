@@ -2,7 +2,7 @@ from firedrake import *
 from .create_timestep_solver import create_timestep_solver
 from .printoff import iter_info_verbose, text, green
 
-def timestepper_MMS(theta, V, dsN, t, T, dt, N, make_weak_form,
+def timestepper_MMS(theta, Z, dsN, t, T, dt, N, make_weak_form,
                 function_appctx, bcs=None, nullspace=None, solver_parameters=None):
     """
     Perform timestepping using theta-scheme with
@@ -12,21 +12,20 @@ def timestepper_MMS(theta, V, dsN, t, T, dt, N, make_weak_form,
     final solved solution and the exact solution
     """
 
-    if W is not None:
-        Z = V * W
-    else:
-        Z = V
+    # Extract number of subfields (1 for scalar, 2 for mixed)
+    num_subspaces = Z.num_sub_spaces()
 
     # Initialize solution function
     u_old = Function(Z)
     u_new = Function(Z)
 
-    # Prepare solver for computing time step
-    solver = create_timestep_solver(theta, W, dsN, u_old, u_new, make_weak_form,
-                                    function_appctx, bcs, nullspace, solver_parameters)
-
-    # Set initial condition
+    # initial condition
+    u0 = function_appctx["u0"]
     u_old.assign(u0)
+
+    # Prepare solver for computing time step
+    solver = create_timestep_solver(theta, Z, dsN, u_old, u_new, make_weak_form,
+                                    function_appctx, bcs, nullspace, solver_parameters)
 
     # Print table header
     energy = assemble(inner(u_old.sub(0), u_old.sub(0)) * dx)
@@ -50,14 +49,15 @@ def timestepper_MMS(theta, V, dsN, t, T, dt, N, make_weak_form,
         energy = assemble(inner(u_new.sub(0), u_new.sub(0)) * dx)
         iter_info_verbose("TIME STEP COMPLETED", f"energy = {energy}", i=step)
 
-        # Update exact solution
-        if W is None:
+        # Write to file
+        if num_subspaces == 1:
             ufl_u_exact = function_appctx["ufl_u_exact"]
             u_exact.subfunctions[0].interpolate(ufl_u_exact)
 
             # write to file
             outfile.write(u_new)
-        else:
+
+        elif num_subspaces == 2:
             ufl_v_exact = function_appctx["ufl_v_exact"]
             ufl_p_exact = function_appctx["ufl_p_exact"]
             u_exact.subfunctions[0].interpolate(ufl_v_exact)

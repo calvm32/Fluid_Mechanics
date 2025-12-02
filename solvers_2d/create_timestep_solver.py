@@ -38,8 +38,6 @@ def create_timestep_solver(theta, Z, dsN, u_old, u_new, make_weak_form,
     else:
         raise NotImplementedError("Only 1 or 2-component function spaces supported")
 
-    J = derivative(F, u_new)
-
     def solve_(t, dt):
         """
         Update problem data to interval (t, t+dt) and run solver
