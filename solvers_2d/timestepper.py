@@ -1,7 +1,6 @@
 from firedrake import *
 from .create_timestep_solver import create_timestep_solver
-from .compute_energy import compute_energy
-from .printoff import *
+from .printoff import iter_info_verbose, text, green
 
 def timestepper(V, f, g, dsN, theta, T, dt, u0, make_weak_form,
                 bcs=None, nullspace=None, solver_parameters=None, appctx=None, W=None):
