@@ -21,13 +21,13 @@ def timestepper(theta, Z, dsN, t, T, dt, make_weak_form, function_appctx,
 
     # initial condition
     if isinstance(Z, MixedFunctionSpace):
-        ufl_v0 = function_appctx["ufl_v"]
-        ufl_p0 = function_appctx["ufl_p"]
+        ufl_v0 = function_appctx["ufl_v0"]
+        ufl_p0 = function_appctx["ufl_p0"]
         u_old.sub(0).interpolate(ufl_v0)
         u_old.sub(1).interpolate(ufl_p0)
     
     else:
-        ufl_u0 = function_appctx["ufl_u"]
+        ufl_u0 = function_appctx["ufl_u0"]
         u_old.interpolate(ufl_u0)
 
     # Prepare solver for computing time step
