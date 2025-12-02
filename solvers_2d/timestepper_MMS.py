@@ -23,7 +23,7 @@ def timestepper_MMS(theta, Z, dsN, t, T, dt, N, make_weak_form,
     u_new = Function(Z)
 
     # initial condition
-    if isinstance(Z, MixedFunctionSpace):
+    if isinstance(Z.ufl_element(), MixedElement):
         ufl_v0 = function_appctx["ufl_v_exact"]
         ufl_p0 = function_appctx["ufl_p_exact"]
         u_old.sub(0).interpolate(ufl_v0)
@@ -65,7 +65,7 @@ def timestepper_MMS(theta, Z, dsN, t, T, dt, N, make_weak_form,
         # ------------------------------
         # Update exact and write to file
         # ------------------------------
-        if isinstance(Z, MixedFunctionSpace):
+        if isinstance(Z.ufl_element(), MixedElement):
             u_exact = Function(Z)
 
             ufl_v_exact = function_appctx["ufl_v_exact"]
