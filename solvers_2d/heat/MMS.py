@@ -22,7 +22,7 @@ for N in N_list:
     # exact functions for u=e^t*sin(pix)*cos(piy)
     ufl_u_exact = ufl_exp(t)*cos(pi*x)*cos(pi*y)                # initial condition u0 
     ufl_f_exact = (1+2*pi**2)*ufl_exp(t)*cos(pi*x)*cos(pi*y)    # source term f 
-    ufl_g_exact = 0                                             # bdy condition g
+    ufl_g_exact = Constant(0)                                   # bdy condition g
 
     # declare function space and interpolate functions
     V = FunctionSpace(mesh, "CG", 1)

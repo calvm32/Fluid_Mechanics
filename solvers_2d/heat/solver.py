@@ -8,9 +8,9 @@ mesh = UnitSquareMesh(N, N)
 x, y = SpatialCoordinate(mesh)
 
 # functions
-ufl_u0 = 0                      # initial condition u0
+ufl_u0 = Constant(0)            # initial condition u0
 ufl_f = cos(x*pi)*cos(y*pi)     # source term f
-ufl_g = 0                       # bdy condition g
+ufl_g = Constant(0)             # bdy condition g
 
 # declare function space and interpolate functions
 V = FunctionSpace(mesh, "CG", 1)
