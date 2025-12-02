@@ -17,11 +17,12 @@ def create_timestep_solver(theta, Z, dsN, u_old, u_new, make_weak_form,
         solver_kwargs["nullspace"] = nullspace
     if solver_parameters is not None:
         solver_kwargs["solver_parameters"] = solver_parameters
-    if function_appctx is not None:
-        solver_kwargs["function_appctx"] = function_appctx
 
     # Initialize coefficients
     idt = Constant(0.0)
+
+    # Make weak form
+    weak_form = make_weak_form(theta, idt, function_appctx["ufl_f"], function_appctx["ufl_g"], dsN)
 
     if isinstance(Z, MixedFunctionSpace):
         (u, p) = split(u_new)
