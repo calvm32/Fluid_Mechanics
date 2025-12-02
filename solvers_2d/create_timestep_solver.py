@@ -1,7 +1,7 @@
 from firedrake import *
 
-def create_timestep_solver(f, g, dsN, theta, u_old, u_new, make_weak_form,
-                           bcs, nullspace, solver_parameters, appctx, W):
+def create_timestep_solver(theta, W, dsN, f, g, u_old, u_new, make_weak_form,
+                           bcs, nullspace, solver_parameters, appctx):
     """
     Prepare timestep solver by theta-scheme for given
     solution u_old at time t and unknown u_new at time t + dt.

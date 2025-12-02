@@ -14,6 +14,7 @@ ufl_u0 = 0                      # initial condition u0
 
 # declare function space and interpolate functions
 V = FunctionSpace(mesh, "CG", 1)
+W = FunctionSpace(mesh, "CG", 0)
 
 f = Function(V)
 g = Function(V)
@@ -22,4 +23,4 @@ u0 = Function(V)
 u0.interpolate(ufl_u0)
 
 # run
-timestepper(V, f, g, ds(1), theta, T, dt, u0, make_weak_form)
+timestepper(theta, V, W, f, g, ds(1), T, dt, u0, make_weak_form)

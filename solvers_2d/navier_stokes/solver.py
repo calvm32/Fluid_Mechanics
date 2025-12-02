@@ -3,8 +3,6 @@ from solvers_2d.timestepper import timestepper
 from .make_weak_form import make_weak_form
 from .config import T, dt, theta, N, Re
 
-appctx = {"Re": Re, "velocity_space": 0}
-
 solver_parameters = {
     "mat_type": "matfree",
     "ksp_type": "fgmres",
@@ -57,6 +55,5 @@ nullspace = MixedVectorSpaceBasis(
     Z, [Z.sub(0), VectorSpaceBasis(constant=True)])
 
 # run
-timestepper(V, f, g, ds(1), theta, T, dt, u0, make_weak_form,
-        bcs=bcs, nullspace=nullspace, solver_parameters=solver_parameters, 
-        appctx=appctx, W=W)
+timestepper(theta, V, W, f, g, ds(1), T, dt, u0, make_weak_form,
+        bcs=bcs, nullspace=nullspace, solver_parameters=solver_parameters, appctx=appctx)

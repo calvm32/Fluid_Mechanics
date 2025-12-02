@@ -3,31 +3,9 @@ import matplotlib.pyplot as plt
 from solvers_2d.timestepper_MMS import timestepper_MMS
 from .make_weak_form import make_weak_form
 from solvers_2d.printoff import blue
-from .config import t0, T, dt, theta, Re, P, H, N_list
+from .config import t0, T, dt, theta, Re, P, H, N_list, solver_parameters
 
 error_list = []
-
-solver_parameters = {
-    "mat_type": "matfree",
-    "ksp_type": "fgmres",
-    "pc_type": "fieldsplit",
-    "pc_fieldsplit_type": "schur",
-    "pc_fieldsplit_schur_fact_type": "lower",
-    "fieldsplit_0_ksp_type": "preonly",
-    "fieldsplit_0_pc_type": "python",
-    "fieldsplit_0_pc_python_type": "firedrake.AssembledPC",
-    "fieldsplit_0_assembled_pc_type": "lu",
-    "fieldsplit_1_ksp_type": "gmres",
-    "fieldsplit_1_pc_type": "python",
-    "fieldsplit_1_pc_python_type": "firedrake.PCDPC",
-    "fieldsplit_1_pcd_Mp_pc_type": "lu",
-    "fieldsplit_1_pcd_Kp_pc_type": "lu",
-    "fieldsplit_1_pcd_Fp_mat_type": "matfree",
-    #"snes_monitor": None,
-    #"snes_converged_reason": None,
-    #"ksp_monitor_true_residual": None,
-    #"ksp_converged_reason": None,
-}
 
 # calculate error as mesh size increases
 for N in N_list:
@@ -55,8 +33,6 @@ for N in N_list:
     W = FunctionSpace(mesh, "CG", 1)
     Z = V * W
 
-    appctx = {"Re": Re, "velocity_space": 0}
-
     u_exact = Function(Z)
     f = Function(V)
     g = Function(V)
@@ -66,18 +42,22 @@ for N in N_list:
     u_exact.subfunctions[1].interpolate(ufl_p_exact)
     u0.subfunctions[0].interpolate(ufl_v_exact)
     u0.subfunctions[1].interpolate(ufl_p_exact)
+
+    appctx = {
+              "ufl_v_exact": ufl_v_exact,
+              "ufl_p_exact": ufl_p_exact,
+              "ufl_f_exact": ufl_f_exact,
+              "ufl_g_exact": ufl_g_exact
+              }
     
     # BCs
-    bc_noslip = DirichletBC(Z.sub(0), Constant((0.0, 0.0)), (1, 3))
-    bc_pressure_ref = DirichletBC(Z.sub(1), Constant(0.0), (2,))  # pin pressure at boundary id 2
-    bcs = [bc_noslip, bc_pressure_ref]
-
-    nullspace = MixedVectorSpaceBasis(Z, [Z.sub(0), VectorSpaceBasis(constant=True)])
+    bcs = DirichletBC(Z.sub(0), Constant((0.0, 0.0)), (1, 3))
+    nullspace = MixedVectorSpaceBasis(Z, [VectorSpaceBasis(constant=True), None])
     
     # run
-    error = timestepper_MMS(V, f, g, ds(1), theta, t0, T, dt, u0, make_weak_form, u_exact,
-            N, bcs=bcs, nullspace=nullspace, solver_parameters=solver_parameters, 
-            appctx=appctx, W=W)
+    error = timestepper_MMS(theta, V, W, f, g, ds(1), t0, T, dt, u0, u_exact,
+            N, make_weak_form, bcs=bcs, nullspace=nullspace, 
+            solver_parameters=solver_parameters, appctx=appctx)
     error_list.append(error)
 
 plt.loglog(N_list, error_list, "-o")
