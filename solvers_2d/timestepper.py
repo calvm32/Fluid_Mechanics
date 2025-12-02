@@ -26,7 +26,7 @@ def timestepper(theta, Z, dsN, T, dt, make_weak_form, function_appctx,
     # Prepare solver for computing time step
     solver = create_timestep_solver(theta, Z, dsN, u_old, u_new, make_weak_form,
                                     function_appctx, bcs, nullspace, solver_parameters)
-    
+
     # Print table header
     energy = assemble(inner(u_old.sub(0), u_old.sub(0)) * dx)
     iter_info_verbose("INITIAL CONDITIONS", f"energy = {energy}", i=0, spaced=True)
@@ -36,9 +36,9 @@ def timestepper(theta, Z, dsN, T, dt, make_weak_form, function_appctx,
     # --------------------
     # Perform timestepping
     # --------------------
-    t = 0
-    step = 1
-    outfile = VTKFile("soln.pvd")
+
+    step = 0
+    outfile = VTKFile(f"soln_N={N}.pvd")
     while t < T:
         # Perform time step
         solver(t, dt)
