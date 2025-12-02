@@ -1,6 +1,7 @@
 from firedrake import *
 from solvers_2d.timestepper import timestepper
 from .make_weak_form import make_weak_form
+from solvers_2d.printoff import blue
 from .config import t0, T, dt, theta, N
 
 
