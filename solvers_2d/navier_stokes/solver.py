@@ -22,10 +22,10 @@ Z = V * W
 def get_data(t):
     
     # functions
-    ufl_v0 = as_vector([1+sin(pi*x), cos(pi*y)])    # velocity ic
+    ufl_v0 = as_vector([sin(pi*x), cos(pi*y)])    # velocity ic
     ufl_p0 = Constant(5.0)                          # pressure ic
-    ufl_f = as_vector([2, 2])                       # source term f
-    ufl_g = as_vector([2, 2])                       # bdy condition g
+    ufl_f = as_vector([0, 0])                       # source term f
+    ufl_g = as_vector([0, 0])                       # bdy condition g
 
     # returns
     return {"ufl_v0": ufl_v0,
