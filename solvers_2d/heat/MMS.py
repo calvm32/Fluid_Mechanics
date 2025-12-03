@@ -15,27 +15,26 @@ for N in N_list:
     # mesh
     mesh = UnitSquareMesh(N, N)
     x, y = SpatialCoordinate(mesh)
-
-    t = Constant(0.0) # symbolic constant for t
-    ufl_exp = ufl.exp # ufl e, so t gets calculated correctly
-
-    # exact functions for u=e^t*sin(pix)*cos(piy)
-    ufl_u_exact = ufl_exp(t)*cos(pi*x)*cos(pi*y)                # initial condition u0 
-    ufl_f_exact = (1+2*pi**2)*ufl_exp(t)*cos(pi*x)*cos(pi*y)    # source term f 
-    ufl_g_exact = Constant(0)                                   # bdy condition g
-
-    function_space_appctx = {
-          "ufl_u_exact": ufl_u_exact,
-          "ufl_f": ufl_f_exact,
-          "ufl_g": ufl_g_exact
-          }
+    ds = Measure("ds", domain=mesh)
 
     # declare function space and interpolate functions
     V = FunctionSpace(mesh, "CG", 1)
 
+    # time dependant
+    def get_data(t):
+
+        # exact functions for u=e^t*sin(pix)*cos(piy)
+        ufl_u_exact = ufl_exp(t)*cos(pi*x)*cos(pi*y)                # initial condition u0 
+        ufl_f_exact = (1+2*pi**2)*ufl_exp(t)*cos(pi*x)*cos(pi*y)    # source term f 
+        ufl_g_exact = Constant(0)                                   # bdy condition g
+
+        # returns
+        return {"ufl_u_exact": ufl_u_exact,
+                "ufl_f": ufl_f_exact,
+                "ufl_g": ufl_g_exact}
+
     # run
-    error = timestepper_MMS(get_data, theta, V, ds(1), t0, T, dt, N,
-                            make_weak_form, function_space_appctx)
+    error = timestepper_MMS(get_data, theta, V, ds, t0, T, dt, make_weak_form)
     error_list.append(error)
 
 plt.loglog(N_list, error_list, "-o")
@@ -44,3 +43,4 @@ plt.ylabel("error")
 plt.grid(True)
 
 plt.savefig("convergence_plot.png", dpi=200)
+

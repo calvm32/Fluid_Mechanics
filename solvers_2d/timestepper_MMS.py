@@ -3,41 +3,33 @@ from firedrake import *
 from .create_timestep_solver import create_timestep_solver
 from .printoff import iter_info_verbose, text, green
 
-def timestepper_MMS(get_data, theta, Z, dsN, t, T, dt, N, make_weak_form,
+def timestepper(get_data, theta, Z, dsN, t0, T, dt, make_weak_form,
                 bcs=None, nullspace=None, solver_parameters=None):
     """
-    Perform timestepping using theta-scheme with
-    final time T, timestep dt, initial datum u0
-    
-    Also writes the DIFFERENCE between the 
-    final solved solution and the exact solution
+    Generic theta-scheme timestepper for heat or Navier-Stokes using get_data(t).
     """
 
     # -------------
     # Setup problem
     # -------------
 
-    # Initialize solution function
+    # old and new solutions
     u_old = Function(Z)
     u_new = Function(Z)
 
-    # initial condition
+    data0 = get_data(t0) # get the functions at initial time
+
     if isinstance(Z.ufl_element(), MixedElement):
-        ufl_v0 = function_space_appctx["ufl_v0"]
-        ufl_p0 = function_space_appctx["ufl_p0"]
-        u_init = Function(Z)
-        u_init.sub(0).interpolate(ufl_v0)
-        u_init.sub(1).interpolate(ufl_p0)
-        u_old.assign(u_init)
-    
+        u_old.sub(0).interpolate(data0["ufl_u0"][0])  # velocity
+        u_old.sub(1).interpolate(data0["ufl_u0"][1])  # pressure
     else:
-        ufl_u0 = function_space_appctx["ufl_u0"]
-        u_old.interpolate(ufl_u0)
+        u_old.interpolate(data0["ufl_u0"])  # just velocity
 
-    # Prepare solver for computing time step
-    solver = create_timestep_solver(get_data, theta, Z, dsN, u_old, u_new, make_weak_form,
-                                    bcs, nullspace, solver_parameters)
-
+    # create timestep solver
+    solver = create_timestep_solver(get_data, theta, Z, dsN, u_old, u_new,
+                                    make_weak_form, bcs=bcs, nullspace=nullspace,
+                                    solver_parameters=solver_parameters)
+    
     # Print table header
     energy = assemble(inner(u_old.sub(0), u_old.sub(0)) * dx)
     iter_info_verbose("INITIAL CONDITIONS", f"energy = {energy}", i=0, spaced=True)
@@ -48,9 +40,11 @@ def timestepper_MMS(get_data, theta, Z, dsN, t, T, dt, N, make_weak_form,
     # Perform timestepping
     # --------------------
 
+    t = t0
     step = 0
-    outfile = VTKFile(f"soln_N={N}.pvd")
+    outfile = VTKFile("soln_N.pvd")
     while t < T:
+
         # Perform time step
         solver(t, dt)
         t += dt
@@ -62,9 +56,6 @@ def timestepper_MMS(get_data, theta, Z, dsN, t, T, dt, N, make_weak_form,
         # Report some numbers
         energy = assemble(inner(u_new.sub(0), u_new.sub(0)) * dx)
         iter_info_verbose("TIME STEP COMPLETED", f"energy = {energy}", i=step)
-
-        # ------------------------------
-        # Update exact and write to file
         # ------------------------------
         
         if isinstance(Z.ufl_element(), MixedElement):

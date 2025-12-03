@@ -64,4 +64,4 @@ def timestepper(get_data, theta, Z, dsN, t0, T, dt, make_weak_form,
             outfile.write(u_new)
 
     # Done
-    green(f"Completed", spaced=True)
+    green(f"\nCompleted", spaced=True)
