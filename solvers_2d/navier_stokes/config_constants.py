@@ -37,19 +37,18 @@ P = 5.0                 # initial pressure strength
 # -----------------
 
 solver_parameters = {
-    "mat_type": "matfree",
+    "mat_type": "aij",
+    "pmat_type": "aij",
+
     "ksp_type": "gmres",
     "pc_type": "fieldsplit",
     "pc_fieldsplit_type": "schur",
     "pc_fieldsplit_schur_fact_type": "full",
     "pc_fieldsplit_schur_precondition": "selfp",
 
-    # blocks
     "fieldsplit_0_ksp_type": "preonly",
     "fieldsplit_0_pc_type": "hypre",
+
     "fieldsplit_1_ksp_type": "preonly",
     "fieldsplit_1_pc_type": "jacobi",
-
-    # add velocity space for PCD in solver
-    "appctx": { }
 }
