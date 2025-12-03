@@ -34,7 +34,7 @@ for N in N_list:
                 "ufl_g": ufl_g_exact}
 
     # run
-    error = timestepper_MMS(get_data, theta, V, ds, t0, T, dt, make_weak_form)
+    error = timestepper_MMS(get_data, theta, V, ds, t0, T, dt, N, make_weak_form)
     error_list.append(error)
 
 plt.loglog(N_list, error_list, "-o")
