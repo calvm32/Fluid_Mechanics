@@ -42,11 +42,14 @@ def create_timestep_solver(theta, Z, dsN, u_old, u_new, make_weak_form,
         v = TestFunction(Z)
 
         F = weak_form(u, u_old, v)
+        
+    # Build Jacobian (trial function on same mixed space)
+    W_trial = TrialFunction(Z)
+    J = derivative(F, u_new, W_trial)
 
-    J = derivative(F, u_new, TrialFunction(Z))
-
+    # Create a NonlinearVariationalProblem and solver (applies solver kwargs including SNES/KSP)
     problem = NonlinearVariationalProblem(F, u_new, bcs=bcs, J=J)
-    solver = NonlinearVariationalSolver(problem, solver_parameters=solver_parameters)
+    nlsolver = NonlinearVariationalSolver(problem, solver_parameters=solver_parameters)
 
     def solve_(t, dt):
         """
