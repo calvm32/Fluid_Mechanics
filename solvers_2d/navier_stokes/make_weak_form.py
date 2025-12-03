@@ -1,5 +1,5 @@
 from firedrake import *
-from .config import Re
+from .constant_config import Re
 
 def make_weak_form(theta, idt, f, g, dsN):
     """
