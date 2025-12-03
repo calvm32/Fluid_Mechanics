@@ -3,7 +3,7 @@ from firedrake import *
 from .create_timestep_solver import create_timestep_solver
 from .printoff import iter_info_verbose, text, green
 
-def timestepper_MMS(get_data, theta, Z, dsN, t0, T, dt, make_weak_form,
+def timestepper_MMS(get_data, theta, Z, dsN, t0, T, dt, N, make_weak_form,
                 bcs=None, nullspace=None, solver_parameters=None):
     """
     Generic theta-scheme timestepper for heat or Navier-Stokes using get_data(t).
@@ -20,8 +20,8 @@ def timestepper_MMS(get_data, theta, Z, dsN, t0, T, dt, make_weak_form,
     data0 = get_data(t0) # get the functions at initial time
 
     if isinstance(Z.ufl_element(), MixedElement):
-        u_old.sub(0).interpolate(data0["ufl_v0"])  # velocity
-        u_old.sub(1).interpolate(data0["ufl_p0"])  # pressure
+        u_old.sub(0).interpolate(data0["ufl_u0"][0])  # velocity
+        u_old.sub(1).interpolate(data0["ufl_u0"][1])  # pressure
     else:
         u_old.interpolate(data0["ufl_u0"])  # just velocity
 
@@ -42,7 +42,7 @@ def timestepper_MMS(get_data, theta, Z, dsN, t0, T, dt, make_weak_form,
 
     t = t0
     step = 0
-    outfile = VTKFile("soln_N.pvd")
+    outfile = VTKFile(f"soln_N={N}.pvd")
     while t < T:
 
         # Perform time step
@@ -56,28 +56,12 @@ def timestepper_MMS(get_data, theta, Z, dsN, t0, T, dt, make_weak_form,
         # Report some numbers
         energy = assemble(inner(u_new.sub(0), u_new.sub(0)) * dx)
         iter_info_verbose("TIME STEP COMPLETED", f"energy = {energy}", i=step)
-        # ------------------------------
-        
+
+        # write to VTK
         if isinstance(Z.ufl_element(), MixedElement):
-            u_exact = Function(Z)
-
-            ufl_v_exact = function_space_appctx["ufl_v_exact"]
-            ufl_p_exact = function_space_appctx["ufl_p_exact"]
-            u_exact.subfunctions[0].interpolate(ufl_v_exact)
-            u_exact.subfunctions[1].interpolate(ufl_p_exact)
-
-            # write to file
             outfile.write(u_new.sub(0), u_new.sub(1))
-        
         else:
-            u_exact = Function(Z)
-            
-            ufl_u_exact = function_space_appctx["ufl_u_exact"]
-            u_exact.subfunctions[0].interpolate(ufl_u_exact)
-
-            # write to file
             outfile.write(u_new)
-            
 
     # Write FINAL error to file
     u_error = errornorm(u_exact.sub(0), u_new.sub(0))
