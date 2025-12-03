@@ -1,11 +1,11 @@
 from firedrake import *
 
-import matplotlib.pyplot as plt
-from solvers_2d.timestepper_MMS import timestepper_MMS
+from solvers_2d.timestepper import timestepper
 from .make_weak_form import make_weak_form
 from solvers_2d.printoff import blue
+import matplotlib as plt
 
-from .config_constants import t0, T, dt, theta, Re, P, H, N_list, solver_parameters
+from .config_constants import t0, T, dt, theta, Re, P, H, N_list, solver_parameters, vtkfile_name
 
 error_list = []
 
@@ -17,33 +17,32 @@ for N in N_list:
     # mesh
     mesh = RectangleMesh(3*N, N, 3*H, H) # rectangle btwn (0,0) and (3H, H)
     x, y = SpatialCoordinate(mesh)
-
-    t = Constant(0.0)
-    ufl.exp = ufl.exp
-
-    # exact functions for Poiseuille flow  
-    ufl_u_exact = as_uector([                                   # velocity ic
-        Re*( sin(pi*y/H)*ufl.exp(((pi**2)*t)/(H**2)) + 0.5*P*y**2 + 0.5*P*H*y ), 
-        Constant(0.0)
-    ])
-    ufl_p_exact = P                                             # pressure ic
-    ufl_f_exact = as_uector([Constant(0.0), Constant(0.0)])     # source term f
-    ufl_g_exact = as_uector([Constant(0.0), Constant(0.0)])     # bdy condition g
+    ds = Measure("ds", domain=mesh)
 
     # declare function space and interpolate functions
     V = VectorFunctionSpace(mesh, "CG", 2)
     W = FunctionSpace(mesh, "CG", 1)
     Z = V * W
 
-    function_space_appctx = {
-        "velocity_space": V,
-        "pressure_space": W,
-        "ufl_v0": ufl_v0,
-        "ufl_p0": ufl_p0,
-        "ufl_f": ufl_f,
-        "ufl_g": ufl_g,
-        }
-    
+    # time dependant
+    def get_data(t):
+        
+        # exact functions for Poiseuille flow  
+        ufl_v_exact = as_uector([                                   # velocity ic
+            Re*( sin(pi*y/H)*ufl.exp(((pi**2)*t)/(H**2)) + 0.5*P*y**2 + 0.5*P*H*y ), 
+            Constant(0.0)
+        ])
+        ufl_p_exact = P                                             # pressure ic
+        ufl_f_exact = as_uector([Constant(0.0), Constant(0.0)])     # source term f
+        ufl_g_exact = as_uector([Constant(0.0), Constant(0.0)])     # bdy condition g
+
+        # returns
+        return {"ufl_v0": ufl_v_exact,
+                "ufl_p0": ufl_p_exact,
+                "ufl_f": ufl_f_exact,
+                "ufl_g": ufl_g_exact,
+                }
+
     # BCs
     bcs = DirichletBC(Z.sub(0), Constant((0.0, 0.0)), (1, 3))
     nullspace = MixedVectorSpaceBasis(Z, [VectorSpaceBasis(constant=True), None])
@@ -53,11 +52,13 @@ for N in N_list:
     bcs = [bc_noslip, bc_pressure_ref]
 
     nullspace = MixedVectorSpaceBasis(Z, [Z.sub(0), VectorSpaceBasis(constant=True)])
-    
-    # run
-    error = timestepper_MMS(get_data, theta, V, ds(1), t0, T, dt, N, make_weak_form, 
-                            W=W, bcs=bcs, 
-                            nullspace=nullspace, solver_parameters=solver_parameters)
+
+    # run and get error
+    new_vtkfile_name = f"{vtkfile_name}_N{N}"
+
+    error = timestepper(get_data, theta, Z, ds(1), t0, T, dt, make_weak_form,
+        bcs=bcs, nullspace=nullspace, solver_parameters=solver_parameters, 
+        vtkfile_name=new_vtkfile_name)
     error_list.append(error)
 
 plt.loglog(N_list, error_list, "-o")
@@ -66,3 +67,4 @@ plt.ylabel("error")
 plt.grid(True)
 
 plt.savefig("convergence_plot.png", dpi=200)
+

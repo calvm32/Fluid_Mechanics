@@ -4,7 +4,7 @@ from solvers_2d.timestepper import timestepper
 from .make_weak_form import make_weak_form
 from solvers_2d.printoff import blue
 
-from .config_constants import t0, T, dt, theta, N, solver_parameters
+from .config_constants import t0, T, dt, theta, N, solver_parameters, vtkfile_name
 
 blue(f"\n*** Starting solve ***\n", spaced=True)
 
@@ -42,5 +42,5 @@ nullspace = MixedVectorSpaceBasis(
     Z, [Z.sub(0), VectorSpaceBasis(constant=True)])
 
 # run
-timestepper(get_data, theta, Z, ds, t0, T, dt, make_weak_form,
+timestepper(get_data, theta, Z, ds, t0, T, dt, make_weak_form, vtkfile_name=vtkfile_name,
         bcs=bcs, nullspace=nullspace, solver_parameters=solver_parameters)
