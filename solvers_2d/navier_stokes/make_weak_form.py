@@ -16,13 +16,22 @@ def make_weak_form(theta, idt, f, f_old, g, g_old, dsN):
         u_mid = theta * u + (1 - theta) * u_old
     
         return (
-            idt*inner(u-u_old, v)*dx
-            + 1/Re*inner(grad(u_mid), grad(v))*dx
-            + inner(dot(grad(u_mid), u_old), v)*dx
+            # time derivative
+            idt*inner(u - u_old, v)*dx
+
+            # diffusion
+            + (1/Re)*inner(grad(u_mid), grad(v))*dx
+
+            # convection — Crank–Nicolson (implicit midpoint)
+            + inner(dot(u_mid, grad(u_mid)), v)*dx
+
+            # pressure
             - inner(p, div(v))*dx
             + inner(div(u_mid), q)*dx
-            - f_mid * v * dx 
-            - g_mid*v*dsN
+
+            # source
+            - inner(f_mid, v)*dx
+            - inner(g_mid, v)*dsN
         )
     
     return F
