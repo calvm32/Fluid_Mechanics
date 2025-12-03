@@ -7,6 +7,11 @@ import matplotlib as plt
 
 from .config_constants import t0, T, dt, theta, Re, P, H, N_list, solver_parameters, vtkfile_name
 
+import petsc4py.PETSc as PETSc
+PETSc.Sys.Print("Verbose options:")
+PETSc.Options().setValue("ksp_monitor_true_residual", "")
+PETSc.Options().setValue("snes_monitor", "")
+
 error_list = []
 
 # calculate error as mesh size increases
