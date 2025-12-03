@@ -24,7 +24,7 @@ def create_timestep_solver(get_data, theta, Z, dsN, u_old, u_new, make_weak_form
             g = data.get("g", Constant((0.0,0.0)))
 
             u, p = split(u_new)
-            v, q = TestFunctions(Z_fun.function_space())
+            v, q = TestFunctions(Z)
 
             F = make_weak_form(theta, idt, f=f, g=g, dsN=dsN)(u, p, u_old.sub(0), u_old.sub(1), v, q)
 
@@ -36,7 +36,7 @@ def create_timestep_solver(get_data, theta, Z, dsN, u_old, u_new, make_weak_form
         else:
             f = data.get("f", Constant(0.0))
 
-            v = TestFunction(Z_fun.function_space())
+            v = TestFunction(Z)
 
             F = make_weak_form(theta, idt, f=f)(u_new, u_old, v)
 

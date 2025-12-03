@@ -3,9 +3,8 @@ from firedrake import *
 from .create_timestep_solver import create_timestep_solver
 from .printoff import iter_info_verbose, text, green
 
-def timestepper(get_data, theta, Z_fun, dsN, t0, T, dt, make_weak_form,
-                bcs=None, nullspace=None, solver_parameters=None,
-                problem="heat", Re=1.0, vtk_filename=None):
+def timestepper(get_data, theta, Z, dsN, t0, T, dt, make_weak_form,
+                bcs=None, nullspace=None, solver_parameters=None):
     """
     Generic theta-scheme timestepper for heat or Navier-Stokes using get_data(t).
     """
@@ -15,21 +14,17 @@ def timestepper(get_data, theta, Z_fun, dsN, t0, T, dt, make_weak_form,
     # -------------
 
     # old and new solutions
-    u_old = Function(Z_fun.function_space())
-    u_new = Function(Z_fun.function_space())
+    u_old = Function(Z)
+    u_new = Function(Z)
+
     u_old.assign(Z_fun)
 
     # create timestep solver
-    solver = create_timestep_solver(theta, Z_fun, dsN, u_old, u_new,
+    solver = create_timestep_solver(theta, Z, dsN, u_old, u_new,
                                     make_weak_form, get_data,
                                     bcs=bcs, nullspace=nullspace,
-                                    solver_parameters=solver_parameters,
-                                    problem=problem, Re=Re)
-
-    # optional VTK output
-    if vtk_filename:
-        vtkfile = File(vtk_filename)
-
+                                    solver_parameters=solver_parameters)
+    
     # Print table header
     energy = assemble(inner(u_old.sub(0), u_old.sub(0)) * dx)
     iter_info_verbose("INITIAL CONDITIONS", f"energy = {energy}", i=0, spaced=True)
