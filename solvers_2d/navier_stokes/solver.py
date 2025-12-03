@@ -14,10 +14,11 @@ t = Constant(0.0) # symbolic constant for t
 ufl_exp = ufl.exp # ufl e, so t gets calculated correctly 
 
 # functions
-ufl_v0 = as_vector([1, ufl_exp(t)*cos(pi*x)])       # velocity ic
-ufl_p0 = Constant(5.0)                              # pressure ic
+ufl_v0 = as_vector([0.0])           # velocity ic
+ufl_p0 = Constant(5.0)              # pressure ic
 ufl_f = as_vector([0, 0])           # source term f
 ufl_g = as_vector([0, 0])           # bdy condition g
+
 
 # declare function space and interpolate functions
 V = VectorFunctionSpace(mesh, "CG", 2)
