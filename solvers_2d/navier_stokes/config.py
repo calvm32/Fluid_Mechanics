@@ -33,12 +33,6 @@ solver_parameters = {
     #"snes_converged_reason": None,
     #"ksp_monitor_true_residual": None,
     #"ksp_converged_reason": None,
-    "pc_type": "python",
-    "pc_python_type": "firedrake.PCDPC",
-    "pcd_Mp_ksp_type": "preonly",
-    "pcd_Mp_pc_type": "lu",
-    "pcd_Kp_ksp_type": "preonly",
-    "pcd_Kp_pc_type": "hypre"
 }
 
 # ----------------
