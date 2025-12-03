@@ -14,7 +14,7 @@ Re = Constant(100)      # Reynold's num for viscosity
 # Solver parameters
 # -----------------
 
-solver_parameters_test = {
+solver_parameters = {
     "mat_type": "aij", 
     "ksp_type": "preonly", 
     "pc_type": "lu",  # direct LU on assembled matrix
