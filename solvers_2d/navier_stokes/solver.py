@@ -38,35 +38,13 @@ z0 = Function(Z)
 z0.sub(0).interpolate(as_vector([1 + sin(pi*x), cos(pi*y)]))
 z0.sub(1).interpolate(Constant(5.0))
 
-# BCs
-tol = 1e-14
-
-# top lid
-def top(x, on_b):
-    return on_b and near(x[1], 1.0, tol)
-
-# bottom wall
-def bottom(x, on_b):
-    return on_b and near(x[1], 0.0, tol)
-
-# left wall
-def left(x, on_b):
-    return on_b and near(x[0], 0.0, tol)
-
-# right wall
-def right(x, on_b):
-    return on_b and near(x[0], 1.0, tol)
-
-bcs = [
-    DirichletBC(Z.sub(0), Constant((1,0)), top),
-    DirichletBC(Z.sub(0), Constant((0,0)), bottom),
-    DirichletBC(Z.sub(0), Constant((0,0)), left),
-    DirichletBC(Z.sub(0), Constant((0,0)), right)
-]
+# BCs from demo
+bcs = [DirichletBC(Z.sub(0), Constant((1, 0)), (4,)),
+       DirichletBC(Z.sub(0), Constant((0, 0)), (1, 2, 3))]
 
 nullspace = MixedVectorSpaceBasis(
     Z, [Z.sub(0), VectorSpaceBasis(constant=True)])
 
 # run
-timestepper(theta, Z, ds, t0, T, dt, make_weak_form, function_space_appctx,
+timestepper(theta, Z, ds(1), t0, T, dt, make_weak_form, function_space_appctx,
         bcs=bcs, nullspace=nullspace, solver_parameters=solver_parameters)
