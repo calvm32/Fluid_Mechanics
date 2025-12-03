@@ -59,6 +59,6 @@ def create_timestep_solver(theta, Z, dsN, u_old, u_new, make_weak_form,
         idt.assign(1/dt)
 
         # Run the solver
-        solver.solve(F == 0, u_new, **solver_kwargs)
+        solver.solve()
 
     return solve_
