@@ -23,9 +23,8 @@ def timestepper(get_data, theta, Z, dsN, t0, T, dt, make_weak_form,
         u_old.sub(i).interpolate(comp)
 
     # create timestep solver
-    solver = create_timestep_solver(theta, Z, dsN, u_old, u_new,
-                                    make_weak_form, get_data,
-                                    bcs=bcs, nullspace=nullspace,
+    solver = create_timestep_solver(get_data, theta, Z, dsN, u_old, u_new,
+                                    make_weak_form, bcs=bcs, nullspace=nullspace,
                                     solver_parameters=solver_parameters)
     
     # Print table header

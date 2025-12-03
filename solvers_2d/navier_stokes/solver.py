@@ -9,6 +9,7 @@ blue(f"\n*** Starting solve ***\n", spaced=True)
 # mesh
 mesh = UnitSquareMesh(N, N)
 x, y = SpatialCoordinate(mesh)
+ds = Measure("ds", domain=mesh)
 
 # declare function space and interpolate functions
 V = VectorFunctionSpace(mesh, "CG", 2)
@@ -40,5 +41,5 @@ nullspace = MixedVectorSpaceBasis(
     Z, [Z.sub(0), VectorSpaceBasis(constant=True)])
 
 # run
-timestepper(get_data, theta, Z, ds(1), t0, T, dt, make_weak_form,
+timestepper(get_data, theta, Z, ds, t0, T, dt, make_weak_form,
         bcs=bcs, nullspace=nullspace, solver_parameters=solver_parameters)

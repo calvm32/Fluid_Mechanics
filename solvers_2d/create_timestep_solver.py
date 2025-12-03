@@ -26,12 +26,12 @@ def create_timestep_solver(get_data, theta, Z, dsN, u_old, u_new, make_weak_form
             u, p = split(u_new)
             v, q = TestFunctions(Z)
 
-            F = make_weak_form(theta, idt, f=f, g=g, dsN=dsN)(u, p, u_old.sub(0), u_old.sub(1), v, q)
+            F = make_weak_form(theta, idt, f=f, g=g, 
+                               dsN=dsN)(u, p, u_old.sub(0), u_old.sub(1), v, q)
 
             problem_var = NonlinearVariationalProblem(F, u_new, bcs=bcs, J=None)
-            solver = NonlinearVariationalSolver(problem_var,
-                                                solver_parameters=solver_parameters,
-                                                nullspace=nullspace)
+            solver = NonlinearVariationalSolver(problem_var, 
+                    solver_parameters=solver_parameters, nullspace=nullspace)
             
         else:
             f = data.get("f", Constant(0.0))
