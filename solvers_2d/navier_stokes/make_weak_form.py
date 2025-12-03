@@ -18,7 +18,7 @@ def make_weak_form(theta, idt, f, g, dsN):
             + inner(dot(grad(u_mid), u_adv), v) * dx
             - p * div(v) * dx
             + div(u_mid) * q * dx
-            - inner(theta * f_np1 + (1 - theta) * f_n, v) * dx
+            - inner(theta * f + (1 - theta) * f, v) * dx
         )
 
     return F
