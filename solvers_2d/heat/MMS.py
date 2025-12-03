@@ -24,7 +24,7 @@ for N in N_list:
     ufl_f_exact = (1+2*pi**2)*ufl_exp(t)*cos(pi*x)*cos(pi*y)    # source term f 
     ufl_g_exact = Constant(0)                                   # bdy condition g
 
-    function_appctx = {
+    function_space_appctx = {
           "ufl_u_exact": ufl_u_exact,
           "ufl_f": ufl_f_exact,
           "ufl_g": ufl_g_exact
@@ -35,7 +35,7 @@ for N in N_list:
 
     # run
     error = timestepper_MMS(theta, V, ds(1), t0, T, dt, N,
-                            make_weak_form, function_appctx)
+                            make_weak_form, function_space_appctx)
     error_list.append(error)
 
 plt.loglog(N_list, error_list, "-o")

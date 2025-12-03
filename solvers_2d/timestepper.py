@@ -4,7 +4,7 @@ from firedrake.functionspaceimpl import MixedFunctionSpace
 from .create_timestep_solver import create_timestep_solver
 from .printoff import iter_info_verbose, text, green
 
-def timestepper(theta, Z, dsN, t, T, dt, make_weak_form, function_appctx, 
+def timestepper(theta, Z, dsN, t, T, dt, make_weak_form, function_space_appctx, 
                 bcs=None, nullspace=None, solver_parameters=None):
     """
     Perform timestepping using theta-scheme with
@@ -21,18 +21,18 @@ def timestepper(theta, Z, dsN, t, T, dt, make_weak_form, function_appctx,
 
     # initial condition
     if isinstance(Z.ufl_element(), MixedElement):
-        ufl_v0 = function_appctx["ufl_v0"]
-        ufl_p0 = function_appctx["ufl_p0"]
+        ufl_v0 = function_space_appctx["ufl_v0"]
+        ufl_p0 = function_space_appctx["ufl_p0"]
         u_old.sub(0).interpolate(ufl_v0)
         u_old.sub(1).interpolate(ufl_p0)
     
     else:
-        ufl_u0 = function_appctx["ufl_u0"]
+        ufl_u0 = function_space_appctx["ufl_u0"]
         u_old.interpolate(ufl_u0)
 
     # Prepare solver for computing time step
     solver = create_timestep_solver(theta, Z, dsN, u_old, u_new, make_weak_form,
-                                    function_appctx, bcs, nullspace, solver_parameters)
+                                    function_space_appctx, bcs, nullspace, solver_parameters)
 
     # Print table header
     energy = assemble(inner(u_old.sub(0), u_old.sub(0)) * dx)

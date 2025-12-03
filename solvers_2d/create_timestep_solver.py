@@ -2,7 +2,7 @@ from firedrake import *
 from firedrake.functionspaceimpl import MixedFunctionSpace
 
 def create_timestep_solver(theta, Z, dsN, u_old, u_new, make_weak_form,
-                           function_appctx, bcs, nullspace, solver_parameters):
+                           function_space_appctx, bcs, nullspace, solver_parameters):
     """
     Prepare timestep solver by theta-scheme for given
     solution u_old at time t and unknown u_new at time t + dt.
@@ -23,8 +23,8 @@ def create_timestep_solver(theta, Z, dsN, u_old, u_new, make_weak_form,
 
     f = Function(Z)
     g = Function(Z)
-    f.sub(0).interpolate(function_appctx["ufl_f"])
-    g.sub(0).interpolate(function_appctx["ufl_g"])
+    f.sub(0).interpolate(function_space_appctx["ufl_f"])
+    g.sub(0).interpolate(function_space_appctx["ufl_g"])
 
     # Make weak form
     weak_form = make_weak_form(theta, idt, f.sub(0), g.sub(0), dsN)
