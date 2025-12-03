@@ -16,9 +16,8 @@ ufl_exp = ufl.exp # ufl e, so t gets calculated correctly
 # functions
 ufl_v0 = as_vector([1+sin(pi*x), cos(pi*y)])  # velocity ic
 ufl_p0 = Constant(5.0)                      # pressure ic
-ufl_f = as_vector([0, 0])                   # source term f
-ufl_g = as_vector([0, 0])                   # bdy condition g
-
+ufl_f = as_vector([2, 2])                   # source term f
+ufl_g = as_vector([2, 2])                   # bdy condition g
 
 # declare function space and interpolate functions
 V = VectorFunctionSpace(mesh, "CG", 2)
