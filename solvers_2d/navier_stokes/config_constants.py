@@ -50,4 +50,9 @@ solver_parameters = {
     "fieldsplit_1_ksp_type": "preonly",
     "fieldsplit_1_pc_type": "jacobi",
     "pc_fieldsplit_schur_precondition": "selfp",
+    "appctx": {}
+    #"snes_monitor": None,
+    #"snes_converged_reason": None,
+    #"ksp_monitor_true_residual": None,
+    #"ksp_converged_reason": None,
 }
