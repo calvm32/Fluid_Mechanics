@@ -27,7 +27,7 @@ def create_timestep_solver(theta, Z, dsN, u_old, u_new, make_weak_form,
     g.sub(0).interpolate(function_appctx["ufl_g"])
 
     # Make weak form
-    weak_form = make_weak_form(theta, idt, f, g, dsN)
+    weak_form = make_weak_form(theta, idt, f.sub(0), g.sub(0), dsN)
 
     if isinstance(Z.ufl_element(), MixedElement):
         (u, p) = split(u_new)
