@@ -24,13 +24,15 @@ def timestepper_MMS(theta, Z, dsN, t, T, dt, N, make_weak_form,
 
     # initial condition
     if isinstance(Z.ufl_element(), MixedElement):
-        ufl_v0 = function_space_appctx["ufl_v_exact"]
-        ufl_p0 = function_space_appctx["ufl_p_exact"]
-        u_old.sub(0).interpolate(ufl_v0)
-        u_old.sub(1).interpolate(ufl_p0)
+        ufl_v0 = function_space_appctx["ufl_v0"]
+        ufl_p0 = function_space_appctx["ufl_p0"]
+        u_init = Function(Z)
+        u_init.sub(0).interpolate(ufl_v0)
+        u_init.sub(1).interpolate(ufl_p0)
+        u_old.assign(u_init)
     
     else:
-        ufl_u0 = function_space_appctx["ufl_u_exact"]
+        ufl_u0 = function_space_appctx["ufl_u0"]
         u_old.interpolate(ufl_u0)
 
     # Prepare solver for computing time step
