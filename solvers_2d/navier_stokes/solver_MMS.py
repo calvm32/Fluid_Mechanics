@@ -30,7 +30,7 @@ for N in N_list:
     def get_data(t):
         
         # exact functions for Poiseuille flow  
-        ufl_v_exact = as_uector([                                   # velocity ic
+        ufl_v_exact = as_vector([                                   # velocity ic
             Re*( sin(pi*y/H)*ufl.exp(((pi**2)*t)/(H**2)) + 0.5*P*y**2 + 0.5*P*H*y ), 
             Constant(0.0)
         ])
