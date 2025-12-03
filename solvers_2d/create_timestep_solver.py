@@ -53,11 +53,12 @@ def create_timestep_solver(theta, Z, dsN, u_old, u_new, make_weak_form,
         Update problem data to interval (t, t+dt) and run solver
         """
         if isinstance(Z.ufl_element(), MixedElement):
-            for i in range(len(u_old)):
-                u_new.sub(i).assign(u_old.sub(i))
+            u_old_split = u_old.split()
+            u_new_split = u_new.split()
+            for ui, un in zip(u_old_split, u_new_split):
+                un.assign(ui)
         else:
             u_new.assign(u_old)
-        idt.assign(1/dt)
 
         # re-interpolate forcing
         f.interpolate(function_appctx["ufl_f"])
