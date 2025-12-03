@@ -14,25 +14,13 @@ Re = Constant(100)      # Reynold's num for viscosity
 # Solver parameters
 # -----------------
 
-solver_parameters = {
-    "mat_type": "matfree",
-    "ksp_type": "fgmres",
-    "pc_fieldsplit_type": "schur",
-    "pc_fieldsplit_schur_fact_type": "lower",
-    "fieldsplit_0_ksp_type": "preonly",
-    "fieldsplit_0_pc_type": "python",
-    "fieldsplit_0_pc_python_type": "firedrake.AssembledPC",
-    "fieldsplit_0_assembled_pc_type": "lu",
-    "fieldsplit_1_ksp_type": "gmres",
-    "fieldsplit_1_pc_type": "python",
-    "fieldsplit_1_pc_python_type": "firedrake.PCDPC",
-    "fieldsplit_1_pcd_Mp_pc_type": "lu",
-    "fieldsplit_1_pcd_Kp_pc_type": "lu",
-    "fieldsplit_1_pcd_Fp_mat_type": "matfree",
-    #"snes_monitor": None,
-    #"snes_converged_reason": None,
-    #"ksp_monitor_true_residual": None,
-    #"ksp_converged_reason": None,
+solver_parameters_test = {
+    "mat_type": "aij", 
+    "ksp_type": "preonly", 
+    "pc_type": "lu",  # direct LU on assembled matrix
+    "snes_type": "newtonls",
+    "snes_monitor": None,
+    "snes_converged_reason": None,
 }
 
 # ----------------
