@@ -8,7 +8,7 @@ t0 = 0.0                # initial time
 T = 1.0                 # final time
 dt = 0.0001             # timestepping length
 theta = 1/2             # theta constant
-Re = Constant(20)      # Reynold's num for viscosity
+Re = Constant(100)      # Reynold's num for viscosity
 
 # -----------------
 # Solver parameters
@@ -39,7 +39,7 @@ solver_parameters = {
 # For single solve 
 # ----------------
 
-N = 10                  # mesh resolutions
+N = 64                  # mesh resolutions
 
 # -------------
 # For MMS solve
@@ -50,6 +50,6 @@ H = 1.0                 # height of rectangle, with length = 3H
 
 # MMS loops over mesh resolutions in this list
 N_list = []
-for exp in range(3, 7):
+for exp in range(4, 7):
     N = 2**exp
     N_list.append(N)
