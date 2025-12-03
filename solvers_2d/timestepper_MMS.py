@@ -16,14 +16,20 @@ def timestepper_MMS(get_data, theta, Z, dsN, t0, T, dt, N, make_weak_form,
     # old and new solutions
     u_old = Function(Z)
     u_new = Function(Z)
+    u_exact = Function(Z)
 
     data0 = get_data(t0) # get the functions at initial time
 
     if isinstance(Z.ufl_element(), MixedElement):
         u_old.sub(0).interpolate(data0["ufl_v0"])  # velocity
         u_old.sub(1).interpolate(data0["ufl_p0"])  # pressure
+
+        u_exact.sub(0).interpolate(data0["ufl_v0"])  # velocity
+        u_exact.sub(1).interpolate(data0["ufl_p0"])  # pressure
     else:
         u_old.interpolate(data0["ufl_u0"])  # just velocity
+
+        u_exact.interpolate(data0["ufl_u0"])  # just velocity
 
     # create timestep solver
     solver = create_timestep_solver(get_data, theta, Z, dsN, u_old, u_new,
