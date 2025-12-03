@@ -24,7 +24,7 @@ N = 10 # mesh resolution
 
 # MMS loops over mesh resolutions in this list
 N_list = []
-for exp in range(1, 10):
+for exp in range(1, 6):
     N = 2**exp
     N_list.append(N)
 
