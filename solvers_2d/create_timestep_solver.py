@@ -32,8 +32,8 @@ def create_timestep_solver(theta, Z, dsN, u_old, u_new, make_weak_form,
     if isinstance(Z.ufl_element(), MixedElement):
         u, p = split(u_new)
         v, q = TestFunctions(Z)
-        u_old, p_old = split(u_old)
-        F = weak_form(u, p, u_old, p_old, v, q)
+        u_old_, p_old_ = split(u_old)
+        F = weak_form(u, p, u_old_, p_old_, v, q)
         
     else:
         u = u_new
