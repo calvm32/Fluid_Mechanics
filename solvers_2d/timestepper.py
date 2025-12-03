@@ -17,10 +17,13 @@ def timestepper(get_data, theta, Z, dsN, t0, T, dt, make_weak_form,
     u_old = Function(Z)
     u_new = Function(Z)
 
-    u_old = Function(Z)
-    data0 = get_data(t0)
-    for i, comp in enumerate(data0["ufl_u0"]):
-        u_old.sub(i).interpolate(comp)
+    data0 = get_data(t0) # get the functions at initial time
+    
+    if isinstance(Z.ufl_element(), MixedElement):
+        u_old.sub(0).interpolate(data0["ufl_u0"][0])  # velocity
+        u_old.sub(1).interpolate(data0["ufl_u0"][1])  # pressure
+    else:
+        u_old.interpolate(data0["ufl_u0"][0])  # just velocity
 
     # create timestep solver
     solver = create_timestep_solver(get_data, theta, Z, dsN, u_old, u_new,
