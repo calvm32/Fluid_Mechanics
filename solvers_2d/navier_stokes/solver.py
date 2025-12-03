@@ -24,6 +24,10 @@ V = VectorFunctionSpace(mesh, "CG", 2)
 W = FunctionSpace(mesh, "CG", 1)
 Z = V * W
 
+z0 = Function(Z)
+z0.sub(0).interpolate(ufl_v0)
+z0.sub(1).interpolate(ufl_p0)
+
 function_space_appctx = {
     "velocity_space": V,
     "pressure_space": W,
