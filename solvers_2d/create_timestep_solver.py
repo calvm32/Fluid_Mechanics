@@ -33,7 +33,7 @@ def create_timestep_solver(theta, Z, dsN, u_old, u_new, make_weak_form,
         (u, p) = split(u_new)
         (u_old_, p_old_) = split(u_old)
         v = TestFunction(Z)
-        u_test, p_test = v.split()
+        u_test, p_test = split(v)
         F = weak_form(u, p, u_old_, p_old_, u_test, p_test)
         
     else:
