@@ -38,16 +38,18 @@ def get_data(t):
             "ufl_g": ufl_g,
             }
 
+
 # Boundary conditions
 bcs = [DirichletBC(Z.sub(0), Constant((1, 0)), (4,)),
        DirichletBC(Z.sub(0), Constant((0, 0)), (1, 2, 3))]
 
-# Nullspace for pressure
-velocity_subspace = V
-pressure_subspace = W
+# Functions
+up = Function(Z)  # solution function
+u, p = split(up)
 
+# Nullspace
 nullspace = MixedVectorSpaceBasis(
-    Z, [velocity_subspace, VectorSpaceBasis(pressure_subspace, constant=True)]
+    Z, [up.sub(0), VectorSpaceBasis(up.sub(1), constant=True)]
 )
 
 # run
