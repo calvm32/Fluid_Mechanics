@@ -20,7 +20,7 @@ V = VectorFunctionSpace(mesh, "CG", 2)
 W = FunctionSpace(mesh, "CG", 1)
 Z = V * W
 
-solver_parameters["appctx"]["velocity_space"] = Z.sub(0).topological.ufl_function_space() # necessary so it's a function space
+solver_parameters["appctx"]["velocity_space"] = V
 
 # time dependant
 def get_data(t):
