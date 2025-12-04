@@ -6,6 +6,8 @@ from solvers_2d.printoff import blue
 
 from .config_constants import t0, T, dt, theta, N, solver_parameters, appctx, vtkfile_name
 
+blue(f"\n*** Starting solve ***\n", spaced=True)
+
 # ------------
 # Setup spaces
 # ------------
@@ -37,8 +39,8 @@ nullspace = MixedVectorSpaceBasis(
 def get_data(t):
     
     # functions
-    ufl_v0 = as_vector([sin(pi*x), cos(pi*y)])    # velocity ic
-    ufl_p0 = Constant(5.0)                          # pressure ic
+    ufl_v0 = as_vector([0, 0])    # velocity ic
+    ufl_p0 = Constant(0.0)                          # pressure ic
     ufl_f = as_vector([0, 0])                       # source term f
     ufl_g = as_vector([0, 0])                       # bdy condition g
 

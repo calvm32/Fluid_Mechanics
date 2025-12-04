@@ -7,37 +7,43 @@ import matplotlib as plt
 
 from .config_constants import t0, T, dt, theta, Re, P, H, N_list, solver_parameters, vtkfile_name
 
-import petsc4py.PETSc as PETSc
-PETSc.Sys.Print("Verbose options:")
-PETSc.Options().setValue("ksp_monitor_true_residual", "")
-PETSc.Options().setValue("snes_monitor", "")
-
-error_list = []
-
 # calculate error as mesh size increases
+error_list = []
 for N in N_list:
 
-    blue(f"\n*** Mesh size N = {N:0d} ***\n", spaced=True)
+    blue(f"\n*** Mesh size N = {N:0d} ***\n", spaced=True) # report mesh size
+    new_vtkfile_name = f"{vtkfile_name}_N{N}" # write to new file
 
-    # mesh and measures
-    mesh = RectangleMesh(3*N, N, 3*H, H) # rectangle btwn (0,0) and (3H, H)
+    # ------------
+    # Setup spaces
+    # ------------
+
+    mesh = UnitSquareMesh(N, N)
     x, y = SpatialCoordinate(mesh)
 
     dx = Measure("dx", domain=mesh)
     ds = Measure("ds", domain=mesh)
 
-    # declare function space and interpolate functions
     V = VectorFunctionSpace(mesh, "CG", 2)
     W = FunctionSpace(mesh, "CG", 1)
     Z = V * W
 
-    # pass velocity space
-    solver_parameters["appctx"]["velocity_space"] = Z.sub(0).collapse()
-    solver_parameters["appctx"]["pressure_space"] = Z.sub(1).collapse()
+    # -------------------
+    # Boundary conditions
+    # -------------------
 
-    # time dependant
+    bc_noslip = DirichletBC(Z.sub(0), Constant((0.0, 0.0)), (1, 3))
+    bc_pressure_ref = DirichletBC(Z.sub(1), Constant(0.0), (2,))  # pin pressure at boundary id 2
+    bcs = [bc_noslip, bc_pressure_ref]
+
+    nullspace = MixedVectorSpaceBasis(Z, [Z.sub(0), VectorSpaceBasis(constant=True)])
+
+    # ------------------
+    # Allocate functions
+    # ------------------
+
     def get_data(t):
-        
+
         # exact functions for Poiseuille flow  
         ufl_v_exact = as_vector([                                   # velocity ic
             Re*( sin(pi*y/H)*ufl.exp(((pi**2)*t)/(H**2)) + 0.5*P*y**2 + 0.5*P*H*y ), 
@@ -54,19 +60,19 @@ for N in N_list:
                 "ufl_g": ufl_g_exact,
                 }
 
-    # BCs
-    bc_noslip = DirichletBC(Z.sub(0), Constant((0.0, 0.0)), (1, 3))
-    bc_pressure_ref = DirichletBC(Z.sub(1), Constant(0.0), (2,))  # pin pressure at boundary id 2
-    bcs = [bc_noslip, bc_pressure_ref]
+    # ----------
+    # Run solver
+    # ----------
 
-    nullspace = MixedVectorSpaceBasis(Z, [Z.sub(0), VectorSpaceBasis(constant=True)])
+    error = timestepper(get_data, theta, 
+            Z, dx, ds, 
+            t0, T, dt,
+            make_weak_form=make_weak_form,
+            bcs=bcs, nullspace=nullspace,
+            solver_parameters=solver_parameters,
+            appctx=appctx, vtkfile_name=new_vtkfile_name)
 
-    # run and get error
-    new_vtkfile_name = f"{vtkfile_name}_N{N}"
 
-    error = timestepper(get_data, theta, Z, dx, ds(1), t0, T, dt, make_weak_form,
-        bcs=bcs, nullspace=nullspace, solver_parameters=solver_parameters, appctx=appctx,
-        vtkfile_name=new_vtkfile_name)
     error_list.append(error)
 
 plt.loglog(N_list, error_list, "-o")
@@ -75,4 +81,3 @@ plt.ylabel("error")
 plt.grid(True)
 
 plt.savefig("convergence_plot.png", dpi=200)
-

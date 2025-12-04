@@ -7,11 +7,8 @@ from solvers_2d.printoff import blue
 
 from .config_constants import t0, T, dt, theta, N_list, vtkfile_name
 
-error_list = [] # calculate error as mesh size increases
-
-# ------------------------
-# Solve for each mesh size
-# ------------------------
+# calculate error as mesh size increases
+error_list = [] 
 for N in N_list:
 
     blue(f"\n*** Mesh size N = {N:0d} ***\n", spaced=True) # report mesh size
