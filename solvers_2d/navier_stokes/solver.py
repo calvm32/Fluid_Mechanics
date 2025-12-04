@@ -21,6 +21,7 @@ W = FunctionSpace(mesh, "CG", 1)
 Z = V * W
 
 solver_parameters["appctx"]["velocity_space"] = Z.sub(0).topological.ufl_function_space()
+print("velocity_space type:", type(solver_parameters["appctx"]["velocity_space"]))
 
 # time dependant
 def get_data(t):
@@ -44,23 +45,6 @@ bcs = [DirichletBC(Z.sub(0), Constant((1, 0)), (4,)),
 
 nullspace = MixedVectorSpaceBasis(
     Z, [Z.sub(0), VectorSpaceBasis(constant=True)])
-
-solver_parameters["fieldsplit_1_pc_type"] = "python"
-solver_parameters["fieldsplit_1_pc_python_type"] = "firedrake.AssembledPC"
-solver_parameters["fieldsplit_1_pcd_Mp_pc_type"] = "lu"
-solver_parameters["fieldsplit_1_pcd_Kp_pc_type"] = "lu"
-
-solver_parameters["mat_type"] = "aij"
-
-
-print("velocity_space type:", type(solver_parameters["appctx"]["velocity_space"]))
-
-
-solver_parameters_test = solver_parameters.copy()
-solver_parameters_test.pop("fieldsplit_1_pc_type", None)
-solver_parameters_test.pop("fieldsplit_1_pc_python_type", None)
-solver_parameters_test.pop("fieldsplit_1_pcd_Mp_pc_type", None)
-solver_parameters_test.pop("fieldsplit_1_pcd_Kp_pc_type", None)
 
 # run
 timestepper(get_data, theta, Z, dx, ds(1), t0, T, dt, make_weak_form, vtkfile_name=vtkfile_name,
