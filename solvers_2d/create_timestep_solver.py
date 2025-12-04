@@ -25,10 +25,10 @@ def create_timestep_solver(get_data, theta, Z, dx , dsN, u_old, u_new, make_weak
     f_new = data_init.get("ufl_f")
     g_new = data_init.get("ufl_g")
 
+    # Create the solver + compute Jacobian once
     F_expr = make_weak_form(theta, idt, f_new, f_old, g_new, g_old, dx, dsN)(u_new, u_old, v)
-
-    # Create the solver once
     J = derivative(F_expr, u_new)
+    
     problem_var = NonlinearVariationalProblem(F_expr, u_new, bcs=bcs, J=J)
     solver = NonlinearVariationalSolver(problem_var,
                                         solver_parameters=solver_parameters,

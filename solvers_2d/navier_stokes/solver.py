@@ -39,12 +39,12 @@ nullspace = MixedVectorSpaceBasis(
 def get_data(t):
     
     # velocity ic
-    ufl_v0 = as_vector([Constant(0.0), Constant(0.0)])
-    ufl_p0 = Constant(0.0)
+    ufl_v0 = as_vector([Constant(1.0), Constant(1.0)])
+    ufl_p0 = Constant(1.0)
 
     # source term f
-    ufl_f = as_vector([Constant(0.0), Constant(0.0)])
-    ufl_g = as_vector([Constant(0.0), Constant(0.0)])
+    ufl_f = as_vector([Constant(1.0), Constant(1.0)])
+    ufl_g = as_vector([Constant(1.0), Constant(1.0)])
 
     # returns
     return {"ufl_v0": ufl_v0,
