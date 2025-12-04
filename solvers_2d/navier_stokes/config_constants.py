@@ -38,6 +38,7 @@ P = 5.0                 # initial pressure strength
 
 solver_parameters = {
     "mat_type": "matfree",
+    "snes_monitor": None,
     "ksp_type": "fgmres",
     "pc_type": "fieldsplit",
     "pc_fieldsplit_type": "schur",
