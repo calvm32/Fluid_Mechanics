@@ -31,7 +31,7 @@ def get_data(t):
     # functions
     ufl_u0 = ufl.exp(t)*cos(pi*x)   # initial condition u0
     ufl_f = cos(x*pi)*cos(y*pi)     # source term f
-    ufl_g = Constant(0)             # bdy condition g
+    ufl_g = Constant(0.0)           # bdy condition g
 
     # returns
     return {"ufl_u0": ufl_u0,

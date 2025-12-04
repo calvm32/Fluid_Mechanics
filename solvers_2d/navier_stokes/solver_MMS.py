@@ -49,7 +49,7 @@ for N in N_list:
             Re*( sin(pi*y/H)*ufl.exp(((pi**2)*t)/(H**2)) + 0.5*P*y**2 + 0.5*P*H*y ), 
             Constant(0.0)
         ])
-        ufl_p_exact = P                                             # pressure ic
+        ufl_p_exact = Constant(P)                                   # pressure ic
         ufl_f_exact = as_vector([Constant(0.0), Constant(0.0)])     # source term f
         ufl_g_exact = as_vector([Constant(0.0), Constant(0.0)])     # bdy condition g
 
