@@ -10,12 +10,32 @@ def create_timestep_solver(get_data, theta, Z, dx , dsN, u_old, u_new, make_weak
     Return a solve function taking (t, dt)
     """
 
-    # Initialize coefficients
-    idt = Constant(1.0)
-
     # ---------------
     # Make new solver
     # ---------------
+
+    # Initialize coefficients
+    idt = Constant(0.0)
+    v = TestFunction(Z)
+
+    # Initial weak form with placeholders
+    data_init = get_data(0.0)
+    f_old = data_init.get("ufl_f")
+    g_old = data_init.get("ufl_g")
+    f_new = data_init.get("ufl_f")
+    g_new = data_init.get("ufl_g")
+
+    F_expr = make_weak_form(theta, idt, f_new, f_old, g_new, g_old, dx, dsN)(u_new, u_old, v)
+
+    # Create the solver once
+    problem_var = NonlinearVariationalProblem(F_expr, u_new, bcs=bcs)
+    solver = NonlinearVariationalSolver(problem_var,
+                                        solver_parameters=solver_parameters,
+                                        nullspace=nullspace, appctx=appctx)
+
+    # -------------
+    # Update solver
+    # -------------
 
     def solve_one_step(t, dt):
         """
@@ -29,15 +49,6 @@ def create_timestep_solver(get_data, theta, Z, dx , dsN, u_old, u_new, make_weak
         g_old = data_old.get("ufl_g")
         f_new = data_new.get("ufl_f")
         g_new = data_new.get("ufl_g")
-        
-        v = TestFunction(Z)
-
-        F = make_weak_form(theta, idt, f_new, f_old, g_new, g_old, dx , dsN)(u_new, u_old, v)
-
-        problem_var = NonlinearVariationalProblem(F, u_new, bcs=bcs)
-        solver = NonlinearVariationalSolver(problem_var,
-                                        solver_parameters=solver_parameters,
-                                        nullspace=nullspace, appctx=appctx)
 
         # Run the solver
         solver.solve()
