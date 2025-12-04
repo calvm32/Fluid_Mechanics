@@ -1,3 +1,5 @@
+from firedrake import * 
+
 N = 64
 
 M = UnitSquareMesh(N, N)
