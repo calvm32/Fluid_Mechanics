@@ -23,13 +23,25 @@ def create_timestep_solver(get_data, theta, Z, dx , dsN, u_old, u_new, make_weak
         g_old = data_old.get("ufl_g")
         f = data_new.get("ufl_f")
         g = data_new.get("ufl_g")
-        
-        v = TestFunction(Z)
 
-        F = make_weak_form(theta, idt, f, f_old, g, g_old, dx , dsN)(u_new, u_old, v)
+        if isinstance(Z.ufl_element(), MixedElement):
 
-        problem_var = NonlinearVariationalProblem(F, u_new, bcs=bcs)
-        solver = NonlinearVariationalSolver(problem_var, solver_parameters=solver_parameters)
+            u, p = split(u_new)
+            v, q = TestFunctions(Z)
+
+            F = make_weak_form(theta, idt, f, f_old, g, g_old, dx , dsN)(u, p, u_old.sub(0), u_old.sub(1), v, q)
+
+            J = derivative(F, u_new)
+            problem_var = NonlinearVariationalProblem(F, u_new, bcs=bcs, J=J)
+            solver = NonlinearVariationalSolver(problem_var, solver_parameters=solver_parameters, nullspace=nullspace)
+
+        else:
+            v = TestFunction(Z)
+
+            F = make_weak_form(theta, idt, f, f_old, g, g_old, dx , dsN)(u_new, u_old, v)
+
+            problem_var = NonlinearVariationalProblem(F, u_new, bcs=bcs)
+            solver = NonlinearVariationalSolver(problem_var, solver_parameters=solver_parameters)
 
         # Run the solver
         solver.solve()

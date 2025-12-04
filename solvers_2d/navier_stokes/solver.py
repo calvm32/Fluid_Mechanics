@@ -1,5 +1,7 @@
 from firedrake import * 
 
+from solvers_2d.timestepper import timestepper
+
 N = 64
 
 M = UnitSquareMesh(N, N)
@@ -119,8 +121,28 @@ parameters = {"mat_type": "matfree",
 
 up.assign(0)
 
-solve(F == 0, up, bcs=bcs, nullspace=nullspace, solver_parameters=parameters,
-      appctx=appctx)
+def get_data(t):
+    # Example: start from rest, no explicit forcing
+    u0 = Constant((0.0, 0.0))  # velocity
+    p0 = Constant(0.0)         # pressure
+
+    # Forcing (optional)
+    f = Constant((0.0, 0.0))
+    g = Constant(0.0)
+
+    # return dictionary matching timestepper expectation
+    return {
+        "ufl_u0": as_vector([u0[0], u0[1], p0]),  # or a Function(Z) in practice
+        "ufl_f": f,
+        "ufl_g": g
+    }
+
+u_error = timestepper(get_data, theta=0.5, Z=Z, dx=dx, dSN=ds,
+                      t0=0.0, T=1.0, dt=0.01,
+                      make_weak_form=make_weak_form,
+                      bcs=bcs, nullspace=nullspace,
+                      solver_parameters=parameters,
+                      vtkfile_name="cavity_ns")
 
 # And finally we write the results to a file for visualisation. ::
 
