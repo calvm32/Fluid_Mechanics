@@ -37,7 +37,7 @@ nullspace = MixedVectorSpaceBasis(
 def get_data(t):
     
     # functions
-    ufl_v0 = as_vector([sin(pi*x)*t, cos(pi*y)])    # velocity ic
+    ufl_v0 = as_vector([sin(pi*x), cos(pi*y)])    # velocity ic
     ufl_p0 = Constant(5.0)                          # pressure ic
     ufl_f = as_vector([0, 0])                       # source term f
     ufl_g = as_vector([0, 0])                       # bdy condition g
@@ -53,7 +53,7 @@ def get_data(t):
 # ----------
 
 timestepper(get_data, theta, 
-            Z, dx, ds(1), 
+            Z, dx, ds, 
             t0, T, dt,
             make_weak_form=make_weak_form,
             bcs=bcs, nullspace=nullspace,

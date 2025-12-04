@@ -51,7 +51,12 @@ for N in N_list:
     # ----------
     # Run solver
     # ----------
-    error = timestepper(get_data, theta, V, dx, ds(1), t0, T, dt, make_weak_form, vtkfile_name=new_vtkfile_name)
+    error = timestepper(get_data, theta, 
+                        V, dx, ds, 
+                        t0, T, dt, 
+                        make_weak_form, 
+                        vtkfile_name=new_vtkfile_name)
+    
     error_list.append(error)
 
 

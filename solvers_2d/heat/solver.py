@@ -43,7 +43,7 @@ def get_data(t):
 # ----------
 
 timestepper(get_data, theta, 
-            V, dx, ds(1), 
+            V, dx, ds, 
             t0, T, dt, 
             make_weak_form, 
             vtkfile_name=vtkfile_name)

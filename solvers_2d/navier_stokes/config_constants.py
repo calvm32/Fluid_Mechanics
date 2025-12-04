@@ -6,7 +6,7 @@ from firedrake import *
 
 t0 = 0.0                # initial time
 T = 1.0                 # final time
-dt = 0.01               # timestepping length
+dt = 0.001               # timestepping length
 theta = 0.5             # theta constant
 Re = Constant(100)      # Reynold's num = 1 / viscosity
 
@@ -18,7 +18,7 @@ vtkfile_name = "Soln"
 # For single solve 
 # ----------------
 
-N = 64 # mesh resolution
+N = 16 # mesh resolution
 
 # -------------
 # For MMS solve
