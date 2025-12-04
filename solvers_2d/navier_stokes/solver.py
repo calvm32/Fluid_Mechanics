@@ -3,6 +3,7 @@ from firedrake import *
 from solvers_2d.timestepper import timestepper
 
 N = 64
+theta = 1
 
 M = UnitSquareMesh(N, N)
 
@@ -137,26 +138,39 @@ def get_data(t):
         "ufl_g": g
     }
 
+def make_weak_form(theta, idt, f, f_old, g, g_old, dx , dsN):
+    """
+    Returns func F(u, u_old, p, q, v), 
+    which builds weak form
+    using external coefficients
+    """
 
+    f_mid = theta * f + (1-theta) * f_old
+    g_mid = theta * g + (1-theta) * g_old
 
-def make_weak_form(theta, idt, f, f_old, g, g_old, dx, dsN):
-    def residual(u_new, u_old, v):
-        u, p = split(u_new)
-        u_old_, p_old = split(u_old)
-        v_u, v_p = split(v)
+    def F(u, p, u_old, p_old, v, q):
+        u_mid = theta * u + (1 - theta) * u_old
+    
+        return (
+            # Time derivative
+            idt*inner(u - u_old, v)*dx
 
-        # theta-scheme time derivative
-        F = idt * inner(u - u_old_, v_u) * dx
+            # Diffusion
+            + (1/Re)*inner(grad(u_mid), grad(v))*dx
 
-        # convection-diffusion term
-        F += theta * (1/Re * inner(grad(u), grad(v_u)) + inner(dot(grad(u), u), v_u) - p * div(v_u)) * dx
-        F += (1 - theta) * (1/Re * inner(grad(u_old_), grad(v_u)) + inner(dot(grad(u_old_), u_old_), v_u) - p_old * div(v_u)) * dx
+            # Convection — Crank–Nicolson (implicit midpoint)
+            + inner(dot(u_mid, grad(u_mid)), v)*dx
 
-        # incompressibility
-        F += div(u) * v_p * dx
+            # Pressure
+            - inner(p, div(v))*dx
+            + inner(div(u_mid), q)*dx
 
-        return F
-    return residual
+            # Source, boundary
+            - inner(f_mid, v)*dx
+            - inner(g_mid, v)*dsN
+        )
+    
+    return F
 
 u_error = timestepper(get_data, theta=0.5, Z=Z, dx=dx, dsN=ds,
                       t0=0.0, T=1.0, dt=0.01,
