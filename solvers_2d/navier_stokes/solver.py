@@ -38,12 +38,17 @@ def get_data(t):
             "ufl_g": ufl_g,
             }
 
-# BCs from demo
+# Boundary conditions
 bcs = [DirichletBC(Z.sub(0), Constant((1, 0)), (4,)),
        DirichletBC(Z.sub(0), Constant((0, 0)), (1, 2, 3))]
 
+# Nullspace for pressure
+velocity_subspace = Z.sub(0)
+pressure_subspace = Z.sub(1)
+
 nullspace = MixedVectorSpaceBasis(
-    Z, [Z.sub(0), VectorSpaceBasis(constant=True)])
+    Z, [velocity_subspace, VectorSpaceBasis(pressure_subspace, constant=True)]
+)
 
 # run
 timestepper(get_data, theta, Z, dx, ds(1), t0, T, dt, make_weak_form, vtkfile_name=vtkfile_name,

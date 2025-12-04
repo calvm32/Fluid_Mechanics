@@ -18,7 +18,7 @@ vtkfile_name = "Soln"
 # For single solve 
 # ----------------
 
-N = 64 # mesh resolution
+N = 8 # mesh resolution
 
 # -------------
 # For MMS solve
