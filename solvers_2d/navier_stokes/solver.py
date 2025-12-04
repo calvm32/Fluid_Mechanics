@@ -20,7 +20,7 @@ V = VectorFunctionSpace(mesh, "CG", 2)
 W = FunctionSpace(mesh, "CG", 1)
 Z = V * W
 
-solver_parameters["appctx"]["velocity_space"] = Z.sub(0).topological.ufl_function_space() # necessary so it's a function space
+solver_parameters["appctx"]["velocity_space"] = V # Z.sub(0).topological.ufl_function_space() # necessary so it's a function space
 
 # allocate Functions for timestepping
 u_old = Function(Z, name="u_old")
@@ -34,10 +34,10 @@ u_old.sub(1).interpolate(Constant(5.0))                       # pressure
 def get_data(t):
     
     # functions
-    ufl_v0 = as_vector([sin(pi*x), cos(pi*y)])    # velocity ic
-    ufl_p0 = Constant(5.0)                          # pressure ic
-    ufl_f = as_vector([0, 0])                       # source term f
-    ufl_g = as_vector([0, 0])                       # bdy condition g
+    ufl_v0 = as_vector([t, cos(pi*y)])    # velocity ic
+    ufl_p0 = Constant(5.0)                # pressure ic
+    ufl_f = as_vector([0, 0])             # source term f
+    ufl_g = as_vector([0, 0])             # bdy condition g
 
     # Allocate functions
     u = Function(V)
