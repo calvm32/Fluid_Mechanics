@@ -6,7 +6,7 @@ from firedrake import *
 
 t0 = 0.0        # initial time
 T = 1.0         # final time
-dt = 0.01       # (initial) timestepping length
+dt = 0.01       # (initial)timestepping length
 theta = 1/2     # theta constant
 Re = 1          # Reynold's number
 
@@ -33,23 +33,5 @@ for exp in range(1, 6):
 # -----------------
 
 solver_parameters = {
-    "mat_type": "matfree",
-    "ksp_type": "fgmres",
-    "pc_type": "fieldsplit",
-    "pc_fieldsplit_type": "schur",
-    "pc_fieldsplit_schur_fact_type": "lower",
-    "fieldsplit_0_ksp_type": "preonly",
-    "fieldsplit_0_pc_type": "python",
-    "fieldsplit_0_pc_python_type": "firedrake.AssembledPC",
-    "fieldsplit_0_assembled_pc_type": "lu",
-    "fieldsplit_1_ksp_type": "gmres",
-    "fieldsplit_1_pc_type": "python",
-    "fieldsplit_1_pc_python_type": "firedrake.PCDPC",
-    "fieldsplit_1_pcd_Mp_pc_type": "lu",
-    "fieldsplit_1_pcd_Kp_pc_type": "lu",
-    "fieldsplit_1_pcd_Fp_mat_type": "matfree",
-    #"snes_monitor": None,
-    #"snes_converged_reason": None,
-    #"ksp_monitor_true_residual": None,
-    #"ksp_converged_reason": None,
+
 }

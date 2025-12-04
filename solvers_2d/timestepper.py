@@ -56,8 +56,11 @@ def timestepper(get_data, theta, Z, dx , dsN, t0, T, dt, make_weak_form,
 
         # write to VTK
         if isinstance(Z.ufl_element(), MixedElement):
+            u_new.sub(0).rename("Velocity")
+            u_new.sub(1).rename("Pressure")
             outfile.write(u_new.sub(0), u_new.sub(1))
         else:
+            u_new.rename("Velocity")
             outfile.write(u_new)
 
     # Done
