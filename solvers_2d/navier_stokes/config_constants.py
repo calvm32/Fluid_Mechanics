@@ -6,8 +6,8 @@ from firedrake import *
 
 t0 = 0.0                # initial time
 T = 1.0                 # final time
-dt = 0.001               # timestepping length
-theta = 1             # theta constant
+dt = 0.01               # timestepping length
+theta = 0.5             # theta constant
 Re = Constant(100)      # Reynold's num = 1 / viscosity
 
 H = 1.0                 # height of box; length = 3*H
@@ -41,8 +41,6 @@ appctx = {"Re": Re, "velocity_space": 0}
 solver_parameters = {
     "mat_type": "matfree",
     "snes_monitor": None,
-    "fieldsplit_0_ksp_monitor": None,
-    "fieldsplit_1_ksp_monitor": None,
 
     # We'll use a non-stationary Krylov solve for the Schur complement, so
     # we need to use a flexible Krylov method on the outside.
@@ -63,9 +61,6 @@ solver_parameters = {
     "fieldsplit_0_pc_type": "python",
     "fieldsplit_0_pc_python_type": "firedrake.AssembledPC",
     "fieldsplit_0_assembled_pc_type": "lu",
-
-    "fieldsplit_0_ksp_type": "preonly",
-    "fieldsplit_0_pc_type": "lu",
 
     # invert the schur complement inexactly using GMRES, preconditioned w PCD
 
