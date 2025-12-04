@@ -122,6 +122,21 @@ parameters = {"mat_type": "matfree",
 up.assign(0)
 
 def get_data(t):
+    
+    # functions
+    ufl_v0 = as_vector([sin(pi*x), cos(pi*y)])    # velocity ic
+    ufl_p0 = Constant(5.0)                          # pressure ic
+    ufl_f = as_vector([0, 0])                       # source term f
+    ufl_g = as_vector([0, 0])                       # bdy condition g
+
+    # returns
+    return {"ufl_v0": ufl_v0,
+            "ufl_p0": ufl_p0,
+            "ufl_f": ufl_f,
+            "ufl_g": ufl_g,
+            }
+
+def get_data(t):
     # Example: start from rest, no explicit forcing
     u0 = Constant((0.0, 0.0))  # velocity
     p0 = Constant(0.0)         # pressure
