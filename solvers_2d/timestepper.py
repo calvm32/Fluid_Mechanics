@@ -20,7 +20,12 @@ def timestepper(get_data, theta, Z, dx , dsN, t0, T, dt, make_weak_form,
 
     data_t0 = get_data(t0) # get the functions at initial time
 
-    u_old.interpolate(data_t0["ufl_u0"])  # just velocity
+    if isinstance(Z.ufl_element(), MixedElement):
+        u_old.sub(0).interpolate(data_t0["ufl_v0"])  # velocity
+        u_old.sub(1).interpolate(data_t0["ufl_p0"])  # pressure
+    else:
+        u_old.interpolate(data_t0["ufl_u0"])  # just velocity
+
     energy = assemble(inner(u_old.sub(0), u_old.sub(0)) * dx)
 
     # create timestep solver
@@ -73,11 +78,9 @@ def timestepper(get_data, theta, Z, dx , dsN, t0, T, dt, make_weak_form,
     data_T = get_data(T) # get the error at final time
 
     if isinstance(Z.ufl_element(), MixedElement):
-        print("\n\n\n\nCORRECT\n\n\n\n")
         u_exact.sub(0).interpolate(data_T["ufl_v0"])  # velocity
         u_exact.sub(1).interpolate(data_T["ufl_p0"])  # pressure
     else:
-        print(f"\n\n\n\nWRONG\n\n\n\n")
         u_exact.interpolate(data_T["ufl_u0"])  # just velocity
 
     # Write FINAL error to file
