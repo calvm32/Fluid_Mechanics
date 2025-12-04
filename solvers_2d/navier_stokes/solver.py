@@ -42,5 +42,5 @@ timestepper(get_data, theta,
             t0, T, dt,
             make_weak_form=make_weak_form,
             bcs=bcs, nullspace=nullspace,
-            olver_parameters=solver_parameters,
+            solver_parameters=solver_parameters,
             appctx=appctx, vtkfile_name=vtkfile_name)
