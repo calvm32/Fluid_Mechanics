@@ -20,10 +20,6 @@ V = VectorFunctionSpace(mesh, "CG", 2)
 W = FunctionSpace(mesh, "CG", 1)
 Z = V * W
 
-# pass velocity space
-solver_parameters["appctx"]["velocity_space"] = 0
-solver_parameters["appctx"]["Re"] = 100.0
-
 # time dependant
 def get_data(t):
     
@@ -46,6 +42,9 @@ bcs = [DirichletBC(Z.sub(0), Constant((1, 0)), (4,)),
 
 nullspace = MixedVectorSpaceBasis(
     Z, [Z.sub(0), VectorSpaceBasis(constant=True)])
+
+import pprint
+pprint.pprint(solver_parameters)
 
 # run
 timestepper(get_data, theta, Z, dx, ds(1), t0, T, dt, make_weak_form, vtkfile_name=vtkfile_name,
