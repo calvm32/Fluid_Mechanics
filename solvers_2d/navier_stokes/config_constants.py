@@ -39,7 +39,7 @@ P = 5.0                 # initial pressure strength
 appctx = {"Re": Re, "velocity_space": 0}
 
 solver_parameters = {
-    "mat_type": "aij",
+    "mat_type": "matfree",
     "snes_monitor": None,
     "fieldsplit_0_ksp_monitor": None,
     "fieldsplit_1_ksp_monitor": None,
@@ -64,6 +64,7 @@ solver_parameters = {
     #"fieldsplit_0_pc_python_type": "firedrake.AssembledPC",
     #"fieldsplit_0_assembled_pc_type": "lu",
 
+    "fieldsplit_0_mat_type": "aij",  # assemble just the velocity block
     "fieldsplit_0_ksp_type": "preonly",
     "fieldsplit_0_pc_type": "lu",
 
