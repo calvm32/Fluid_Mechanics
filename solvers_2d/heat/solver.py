@@ -8,6 +8,10 @@ from .config_constants import t0, T, dt, theta, N, vtkfile_name
 
 blue(f"\n*** Starting solve ***\n", spaced=True)
 
+# ------------
+# Setup spaces
+# ------------
+
 # mesh and measures
 mesh = UnitSquareMesh(N, N)
 x, y = SpatialCoordinate(mesh)
@@ -18,7 +22,10 @@ ds = Measure("ds", domain=mesh)
 # declare function space and interpolate functions
 V = FunctionSpace(mesh, "CG", 1)
 
-# time dependant
+# ------------------
+# Allocate functions
+# ------------------
+
 def get_data(t):
 
     # functions
@@ -31,7 +38,10 @@ def get_data(t):
             "ufl_f": ufl_f,
             "ufl_g": ufl_g}
 
-# run
+# ----------
+# Run solver
+# ----------
+
 timestepper(get_data, theta, 
             V, dx, ds(1), 
             t0, T, dt, 

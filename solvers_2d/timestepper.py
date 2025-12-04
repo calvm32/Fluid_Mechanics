@@ -6,7 +6,7 @@ from .printoff import iter_info_verbose, text, green
 def timestepper(get_data, theta, Z, dx , dsN, t0, T, dt, make_weak_form,
                 bcs=None, nullspace=None, solver_parameters=None, appctx=None, vtkfile_name="Soln"):
     """
-    Generic theta-scheme timestepper for heat or Navier-Stokes using get_data(t).
+    Generic theta-scheme timestepper for velocity or velocity x pressure function spaces
     """
 
     # -------------
@@ -21,16 +21,15 @@ def timestepper(get_data, theta, Z, dx , dsN, t0, T, dt, make_weak_form,
     data_t0 = get_data(t0) # get the functions at initial time
 
     u_old.interpolate(data_t0["ufl_u0"])  # just velocity
+    energy = assemble(inner(u_old.sub(0), u_old.sub(0)) * dx)
 
     # create timestep solver
     solver = create_timestep_solver(get_data, theta, Z, dx , dsN, u_old, u_new,
                                     make_weak_form, bcs=bcs, nullspace=nullspace,
                                     solver_parameters=solver_parameters, appctx=appctx)
     
-    # Print table header
-    energy = assemble(inner(u_old.sub(0), u_old.sub(0)) * dx)
+    # report run starting
     iter_info_verbose("INITIAL CONDITIONS", f"energy = {energy}", i=0, spaced=True)
-
     text(f"*** Beginning solve with step size {dt} ***", spaced=True)
 
     # --------------------
@@ -50,7 +49,7 @@ def timestepper(get_data, theta, Z, dx , dsN, t0, T, dt, make_weak_form,
         # count steps to print
         step += 1
 
-        # Report some numbers
+        # Report each time step
         energy = assemble(inner(u_new.sub(0), u_new.sub(0)) * dx)
         iter_info_verbose("TIME STEP COMPLETED", f"energy = {energy}", i=step)
 
@@ -63,16 +62,22 @@ def timestepper(get_data, theta, Z, dx , dsN, t0, T, dt, make_weak_form,
             u_new.rename("Velocity")
             outfile.write(u_new)
 
-    # Done
+    # ----------------------------------
+    # Report done; find and return error
+    # ----------------------------------
+
+    # report completed
     print(f"\n")
     green(f"Completed", spaced=True)
 
     data_T = get_data(T) # get the error at final time
 
     if isinstance(Z.ufl_element(), MixedElement):
+        print("CORRECT")
         u_exact.sub(0).interpolate(data_T["ufl_v0"])  # velocity
         u_exact.sub(1).interpolate(data_T["ufl_p0"])  # pressure
     else:
+        print("WRONG")
         u_exact.interpolate(data_T["ufl_u0"])  # just velocity
 
     # Write FINAL error to file

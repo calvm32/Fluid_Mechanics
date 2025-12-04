@@ -6,6 +6,10 @@ from solvers_2d.printoff import blue
 
 from .config_constants import t0, T, dt, theta, N, solver_parameters, appctx, vtkfile_name
 
+# ------------
+# Setup spaces
+# ------------
+
 mesh = UnitSquareMesh(N, N)
 x, y = SpatialCoordinate(mesh)
 
@@ -16,11 +20,19 @@ V = VectorFunctionSpace(mesh, "CG", 2)
 W = FunctionSpace(mesh, "CG", 1)
 Z = V * W
 
+# -------------------
+# Boundary conditions
+# -------------------
+
 bcs = [DirichletBC(Z.sub(0), Constant((1, 0)), (4,)),
        DirichletBC(Z.sub(0), Constant((0, 0)), (1, 2, 3))]
 
 nullspace = MixedVectorSpaceBasis(
     Z, [Z.sub(0), VectorSpaceBasis(constant=True)])
+
+# ------------------
+# Allocate functions
+# ------------------
 
 def get_data(t):
     
@@ -36,6 +48,10 @@ def get_data(t):
     return {"ufl_u0": ufl_u0,
             "ufl_f": ufl_f,
             "ufl_g": ufl_g,}
+
+# ----------
+# Run solver
+# ----------
 
 timestepper(get_data, theta, 
             Z, dx, ds(1), 

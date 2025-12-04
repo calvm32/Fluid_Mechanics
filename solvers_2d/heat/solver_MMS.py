@@ -7,12 +7,19 @@ from solvers_2d.printoff import blue
 
 from .config_constants import t0, T, dt, theta, N_list, vtkfile_name
 
-error_list = []
+error_list = [] # calculate error as mesh size increases
 
-# calculate error as mesh size increases
+# ------------------------
+# Solve for each mesh size
+# ------------------------
 for N in N_list:
 
-    blue(f"\n*** Mesh size N = {N:0d} ***\n", spaced=True)
+    blue(f"\n*** Mesh size N = {N:0d} ***\n", spaced=True) # report mesh size
+    new_vtkfile_name = f"{vtkfile_name}_N{N}" # write to new file
+
+    # ------------
+    # Setup spaces
+    # ------------
 
     # mesh and measures
     mesh = UnitSquareMesh(N, N)
@@ -23,6 +30,10 @@ for N in N_list:
 
     # declare function space and interpolate functions
     V = FunctionSpace(mesh, "CG", 1)
+
+    # ------------------
+    # Allocate functions
+    # ------------------
 
     # time dependant
     def get_data(t):
@@ -36,12 +47,17 @@ for N in N_list:
         return {"ufl_u0": ufl_u_exact,
                 "ufl_f": ufl_f_exact,
                 "ufl_g": ufl_g_exact}
-    
-    new_vtkfile_name = f"{vtkfile_name}_N{N}"
 
-    # run
+    # ----------
+    # Run solver
+    # ----------
     error = timestepper(get_data, theta, V, dx, ds(1), t0, T, dt, make_weak_form, vtkfile_name=new_vtkfile_name)
     error_list.append(error)
+
+
+# ------------------------
+# Plot error vs. mesh size
+# ------------------------
 
 plt.loglog(N_list, error_list, "-o")
 plt.xlabel("mesh size h")
