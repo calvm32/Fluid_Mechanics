@@ -158,7 +158,7 @@ def make_weak_form(theta, idt, f, f_old, g, g_old, dx, dsN):
         return F
     return residual
 
-u_error = timestepper(get_data, theta=0.5, Z=Z, dx=dx, dSN=ds,
+u_error = timestepper(get_data, theta=0.5, Z=Z, dx=dx, dsN=ds,
                       t0=0.0, T=1.0, dt=0.01,
                       make_weak_form=make_weak_form,
                       bcs=bcs, nullspace=nullspace,
