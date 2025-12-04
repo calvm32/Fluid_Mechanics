@@ -73,11 +73,11 @@ def timestepper(get_data, theta, Z, dx , dsN, t0, T, dt, make_weak_form,
     data_T = get_data(T) # get the error at final time
 
     if isinstance(Z.ufl_element(), MixedElement):
-        print("CORRECT")
+        print("\n\n\n\nCORRECT\n\n\n\n")
         u_exact.sub(0).interpolate(data_T["ufl_v0"])  # velocity
         u_exact.sub(1).interpolate(data_T["ufl_p0"])  # pressure
     else:
-        print("WRONG")
+        print(f"\n\n\n\nWRONG\n\n\n\n")
         u_exact.interpolate(data_T["ufl_u0"])  # just velocity
 
     # Write FINAL error to file
