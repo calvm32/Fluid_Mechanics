@@ -136,22 +136,6 @@ def get_data(t):
             "ufl_g": ufl_g,
             }
 
-def get_data(t):
-    # Example: start from rest, no explicit forcing
-    u0 = Constant((0.0, 0.0))  # velocity
-    p0 = Constant(0.0)         # pressure
-
-    # Forcing (optional)
-    f = Constant((0.0, 0.0))
-    g = Constant(0.0)
-
-    # return dictionary matching timestepper expectation
-    return {
-        "ufl_u0": as_vector([u0[0], u0[1], p0]),  # or a Function(Z) in practice
-        "ufl_f": f,
-        "ufl_g": g
-    }
-
 def make_weak_form(theta, idt, f, f_old, g, g_old, dx , dsN):
     """
     Returns func F(u, u_old, p, q, v), 
