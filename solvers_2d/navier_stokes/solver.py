@@ -50,6 +50,8 @@ solver_parameters["fieldsplit_1_pcd_Kp_pc_type"] = "lu"
 
 solver_parameters["mat_type"] = "aij"
 
+solver_parameters["appctx"]["velocity_space"] = Z.sub(0)
+
 solver_parameters_test = solver_parameters.copy()
 solver_parameters_test.pop("fieldsplit_1_pc_type", None)
 solver_parameters_test.pop("fieldsplit_1_pc_python_type", None)
