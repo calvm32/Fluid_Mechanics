@@ -1,7 +1,7 @@
 from firedrake import *
 
 def create_timestep_solver(get_data, theta, Z, dx , dsN, u_old, u_new, make_weak_form,
-                           bcs = None, nullspace = None, solver_parameters = None):
+                           bcs=None, nullspace=None, solver_parameters=None):
     """
     Prepare timestep solver by theta-scheme for given
     solution u_old at time t and unknown u_new at time t + dt.
@@ -29,7 +29,10 @@ def create_timestep_solver(get_data, theta, Z, dx , dsN, u_old, u_new, make_weak
         F = make_weak_form(theta, idt, f, f_old, g, g_old, dx , dsN)(u_new, u_old, v)
 
         problem_var = NonlinearVariationalProblem(F, u_new, bcs=bcs)
-        solver = NonlinearVariationalSolver(problem_var, solver_parameters=solver_parameters)
+        solver = NonlinearVariationalSolver(problem_var,
+                                        solver_parameters=solver_parameters,
+                                        nullspace=nullspace,
+                                        appctx=appctx)
 
         # Run the solver
         solver.solve()

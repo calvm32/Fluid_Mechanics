@@ -4,7 +4,7 @@ from .create_timestep_solver import create_timestep_solver
 from .printoff import iter_info_verbose, text, green
 
 def timestepper(get_data, theta, Z, dx , dSN, t0, T, dt, make_weak_form,
-                bcs=None, nullspace=None, solver_parameters=None, vtkfile_name="Soln"):
+                bcs=None, nullspace=None, solver_parameters=None, appctx=None, vtkfile_name="Soln"):
     """
     Generic theta-scheme timestepper for heat or Navier-Stokes using get_data(t).
     """
