@@ -12,7 +12,6 @@ We perform theta-scheme discretization, i.e.
 
 Modules:
     -> timestepper.py: fixed-step theta-scheme time integrator
-    -> timestepper_MMS.py: fixed-step theta-scheme time integrator that returns only a final error
     -> printoff: for logging and printing results
 
 """
