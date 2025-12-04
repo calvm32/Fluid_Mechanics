@@ -152,7 +152,7 @@ def make_weak_form(theta, idt, f, f_old, g, g_old, dx , dsN):
         u_old_, p_old = split(u_old)
         v_u, v_p = split(v)
 
-        u_mid = theta * u_new + (1 - theta) * u_old
+        u_mid = theta * u_new + (1 - theta) * u_old_
     
         return (
             # Time derivative
